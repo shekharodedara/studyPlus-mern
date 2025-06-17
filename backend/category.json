@@ -1,0 +1,102 @@
+[
+  {
+    "name": "Web Development",
+    "description": "HTML, CSS, JavaScript, and modern frameworks",
+    "courses": []
+  },
+  {
+    "name": "Data Science",
+    "description": "Learn Python, Pandas, NumPy, and machine learning basics",
+    "courses": []
+  },
+  {
+    "name": "Mobile App Development",
+    "description": "Build iOS and Android apps using Flutter and React Native",
+    "courses": []
+  },
+  {
+    "name": "Cybersecurity",
+    "description": "Network security, ethical hacking, and more",
+    "courses": []
+  },
+  {
+    "name": "Cloud Computing",
+    "description": "AWS, Azure, GCP services and architecture",
+    "courses": []
+  },
+  {
+    "name": "Game Development",
+    "description": "Create games using Unity or Unreal Engine",
+    "courses": []
+  },
+  {
+    "name": "DevOps",
+    "description": "CI/CD, Docker, Kubernetes, and automation",
+    "courses": []
+  },
+  {
+    "name": "UI/UX Design",
+    "description": "Figma, wireframing, and user experience principles",
+    "courses": []
+  },
+  {
+    "name": "Blockchain",
+    "description": "Smart contracts, Ethereum, and Web3 tech",
+    "courses": []
+  },
+  {
+    "name": "Artificial Intelligence",
+    "description": "Deep learning, neural networks, and AI theory",
+    "courses": []
+  },
+  {
+    "name": "Programming Fundamentals",
+    "description": "Introductory programming in various languages",
+    "courses": []
+  },
+  {
+    "name": "Digital Marketing",
+    "description": "SEO, content marketing, and paid ads",
+    "courses": []
+  },
+  {
+    "name": "Project Management",
+    "description": "Agile, Scrum, and project planning tools",
+    "courses": []
+  },
+  {
+    "name": "Database Management",
+    "description": "SQL, NoSQL, and database design",
+    "courses": []
+  },
+  {
+    "name": "Machine Learning",
+    "description": "Supervised and unsupervised learning algorithms",
+    "courses": []
+  },
+  {
+    "name": "Robotics",
+    "description": "Control systems, sensors, and robotics coding",
+    "courses": []
+  },
+  {
+    "name": "Internet of Things (IoT)",
+    "description": "Build smart devices with sensors and cloud",
+    "courses": []
+  },
+  {
+    "name": "Finance and Tech",
+    "description": "Fintech apps, blockchain in finance, and investing tools",
+    "courses": []
+  },
+  {
+    "name": "Operating Systems",
+    "description": "Linux, Windows internals, and OS concepts",
+    "courses": []
+  },
+  {
+    "name": "Software Testing",
+    "description": "Manual and automated testing practices",
+    "courses": []
+  }
+]

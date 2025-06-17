@@ -1,0 +1,16 @@
+{
+  "name": "StudyPlus",
+  "version": "1.0.0",
+  "description": "A comprehensive Learning Management System application structured as a monorepo.",
+  "scripts": {
+    "in": "npm install --prefix frontend && npm install --prefix backend",
+    "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\"",
+    "start": "npm run start --prefix backend"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "concurrently": "^9.0.1"
+  }
+}

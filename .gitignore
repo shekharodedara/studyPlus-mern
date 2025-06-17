@@ -1,0 +1,5 @@
+# Node.js modules
+/node_modules/
+
+# npm lock files for specific environments
+package-lock.json
