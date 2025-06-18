@@ -1,5 +1,5 @@
 {
-  "name": "StudyPlus",
+  "name": "studyplus",
   "version": "1.0.0",
   "description": "A comprehensive Learning Management System application structured as a monorepo.",
   "scripts": {

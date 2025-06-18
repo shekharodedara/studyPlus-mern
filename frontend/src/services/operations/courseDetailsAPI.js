@@ -1,6 +1,6 @@
 import { toast } from "react-hot-toast";
 import { apiConnector } from "../apiConnector";
-import { courseEndpoints } from "../apis";
+import { courseEndpoints, noteEndpoints } from "../apis";
 
 const {
   COURSE_DETAILS_API,
@@ -21,6 +21,8 @@ const {
   CREATE_RATING_API,
   LECTURE_COMPLETION_API,
 } = courseEndpoints;
+
+const { GET_NOTES_API, ADD_NOTE_API, DELETE_NOTE_API } = noteEndpoints;
 
 export const createCategory = async (categoryData, token) => {
   let result = null;
@@ -383,5 +385,71 @@ export const createRating = async (data, token) => {
     toast.error(error.message);
   }
   toast.dismiss(toastId);
+  return success;
+};
+
+export const addNote = async (data, token) => {
+  const toastId = toast.loading("Saving note...");
+  let success = false;
+  try {
+    const response = await apiConnector("POST", ADD_NOTE_API, data, {
+      Authorization: `Bearer ${token}`,
+    });
+    if (!response?.data?.success) {
+      throw new Error("Could not create note");
+    }
+    toast.success("Note saved successfully");
+    success = true;
+  } catch (error) {
+    console.log("CREATE_NOTE_API ERROR >>>", error);
+    toast.error(error.message || "Failed to save note");
+  } finally {
+    toast.dismiss(toastId);
+  }
+  return success;
+};
+
+export const getNotes = async (videoId, token) => {
+  let result = [];
+  try {
+    const response = await apiConnector(
+      "POST",
+      GET_NOTES_API,
+      { videoId },
+      {
+        Authorization: `Bearer ${token}`,
+      }
+    );
+    if (!response?.data?.success) {
+      throw new Error("Could not fetch notes");
+    }
+    result = response.data.data;
+  } catch (error) {
+    console.log("GET_NOTES_API ERROR >>>", error);
+    toast.error(error.message || "Failed to load notes");
+  }
+  return result;
+};
+
+export const deleteNote = async (noteId, token) => {
+  let success = false;
+  try {
+    const response = await apiConnector(
+      "DELETE",
+      DELETE_NOTE_API,
+      { noteId },
+      {
+        Authorization: `Bearer ${token}`,
+      }
+    );
+    if (!response?.data?.success) {
+      throw new Error("Could not delete note");
+    }
+    toast.success("Note deleted");
+    success = true;
+  } catch (error) {
+    console.log("DELETE_NOTE_API ERROR >>>", error);
+    toast.error(error.message || "Failed to delete note");
+  }
   return success;
 };
