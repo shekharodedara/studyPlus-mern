@@ -27,76 +27,60 @@ function loadScript(src) {
 
 export async function buyItem(
   token,
-  { coursesId = [], book = null },
+  { coursesId = [], books = [] },
   userDetails,
   navigate,
   dispatch
 ) {
-  const toastId = toast.loading("Loading...");
+  const toastId = toast.loading("Processing Payment...");
   try {
-    const res = await loadScript(
+    const sdkRes = await loadScript(
       "https://checkout.razorpay.com/v1/checkout.js"
     );
-    if (!res) {
-      toast.error("RazorPay SDK failed to load");
-      return;
-    }
-    const payload = book ? { isBook: true, book } : { coursesId };
-    const orderResponse = await apiConnector(
-      "POST",
-      COURSE_PAYMENT_API,
-      payload,
-      {
-        Authorization: `Bearer ${token}`,
-      }
-    );
-    if (orderResponse.data.free) {
-      toast.success("Book added to your library successfully!");
+    if (!sdkRes) return toast.error("Razorpay SDK load failed");
+
+    const payload = { coursesId, books };
+    const orderRes = await apiConnector("POST", COURSE_PAYMENT_API, payload, {
+      Authorization: `Bearer ${token}`,
+    });
+    if (!orderRes.data.success) throw new Error(orderRes.data.message);
+    if (orderRes.data.free) {
+      toast.success("Added free items to your account!");
       navigate("/dashboard/e-books");
       toast.dismiss(toastId);
       return;
     }
-    if (!orderResponse.data.success) {
-      throw new Error(orderResponse.data.message);
-    }
-    const RAZORPAY_KEY = import.meta.env.VITE_APP_RAZORPAY_KEY;
+    const { currency, amount, id: order_id } = orderRes.data.message;
     const options = {
-      key: RAZORPAY_KEY,
-      currency: orderResponse.data.message.currency,
-      amount: orderResponse.data.message.amount,
-      order_id: orderResponse.data.message.id,
+      key: import.meta.env.VITE_APP_RAZORPAY_KEY,
+      currency,
+      amount,
+      order_id,
       name: "StudyPlus",
-      description: book
-        ? `Thank You for Purchasing the Book "${book.title}"`
-        : "Thank You for Purchasing the Course(s)",
+      description: `Thank you for your purchase`,
       image: rzpLogo,
       prefill: {
         name: userDetails.firstName,
         email: userDetails.email,
       },
-      handler: function (response) {
-        const verificationPayload = book
-          ? { ...response, isBook: true, book }
-          : { ...response, coursesId };
-        sendPaymentSuccessEmail(
-          response,
-          orderResponse.data.message.amount,
-          token
+      handler(response) {
+        // sendPaymentSuccessEmail(response, amount, token);
+        verifyPayment(
+          { ...response, coursesId, books },
+          token,
+          navigate,
+          dispatch
         );
-        verifyPayment(verificationPayload, token, navigate, dispatch);
       },
     };
-    const paymentObject = new window.Razorpay(options);
-    paymentObject.open();
-    paymentObject.on("payment.failed", function (response) {
-      toast.error("Oops, payment failed");
-      console.log("Payment failed:", response.error);
-    });
-  } catch (error) {
-    console.log("PAYMENT API ERROR:", error);
-    toast.error(error.response?.data?.message || error.message);
+
+    new window.Razorpay(options).open();
+  } catch (err) {
+    console.error(err);
+    toast.error(err.message || err.response?.data?.message);
+  } finally {
+    toast.dismiss(toastId);
   }
-  toast.dismiss(toastId);
 }
 
 async function sendPaymentSuccessEmail(response, amount, token) {
@@ -129,10 +113,10 @@ async function verifyPayment(bodyData, token, navigate, dispatch) {
       throw new Error(response.data.message);
     }
     toast.success("Payment Successful!");
-    if (bodyData.isBook) {
-      navigate("/dashboard/e-books");
-    } else {
+    if (bodyData.coursesId.length) {
       navigate("/dashboard/enrolled-courses");
+    } else {
+      navigate("/dashboard/e-books");
     }
     dispatch(resetCart());
   } catch (error) {

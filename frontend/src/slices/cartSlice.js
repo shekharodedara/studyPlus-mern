@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-hot-toast";
 
+const getItemId = (item) => item._id || item.id;
 const initialState = {
   cart: localStorage.getItem("cart")
     ? JSON.parse(localStorage.getItem("cart"))
@@ -19,8 +20,9 @@ const cartSlice = createSlice({
   reducers: {
     addToCart: (state, action) => {
       const item = action.payload;
-      const index = state.cart.findIndex((i) => i._id === item._id);
-      if (index >= 0) {
+      const itemId = getItemId(item);
+      const alreadyInCart = state.cart.some((i) => getItemId(i) === itemId);
+      if (alreadyInCart) {
         toast.error("Item already in cart");
         return;
       }
@@ -36,7 +38,7 @@ const cartSlice = createSlice({
 
     removeFromCart: (state, action) => {
       const itemId = action.payload;
-      const index = state.cart.findIndex((i) => i._id === itemId);
+      const index = state.cart.findIndex((i) => getItemId(i) === itemId);
       if (index >= 0) {
         state.totalItems--;
         state.total -= state.cart[index].price;

@@ -24,7 +24,7 @@ function BookDetailsCard({ book, user, token, navigate, dispatch }) {
     }
     dispatch(
       addToCart({
-        _id: book.id,
+        id: book.id,
         title: volumeInfo?.title,
         price: price,
         thumbnail: volumeInfo?.imageLinks?.thumbnail,
@@ -46,7 +46,7 @@ function BookDetailsCard({ book, user, token, navigate, dispatch }) {
         thumbnail: volumeInfo.imageLinks?.thumbnail,
         price: price,
       };
-      buyItem(token, { book: bookInfo }, user, navigate, dispatch);
+      buyItem(token, { books: [bookInfo] }, user, navigate, dispatch);
       return;
     }
     setConfirmationModal({

@@ -1,4 +1,3 @@
-const Rajorpay = require("razorpay");
 const instance = require("../config/rajorpay");
 const crypto = require("crypto");
 const mailSender = require("../utils/mailSender");
@@ -12,37 +11,11 @@ const CourseProgress = require("../models/courseProgress");
 const { default: mongoose } = require("mongoose");
 
 exports.capturePayment = async (req, res) => {
-  const { coursesId = [], isBook = false, book = null } = req.body;
+  const { coursesId = [], books = [] } = req.body;
   const userId = req.user.id;
   const currency = "INR";
   let totalAmount = 0;
-  if (isBook) {
-    if (!book || !book.id) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid book data" });
-    }
-    totalAmount = book.price || 0;
-    if (totalAmount === 0) {
-      try {
-        await addBookToUser(book, userId);
-        return res.status(200).json({
-          success: true,
-          message: "Book added successfully (free book)",
-          free: true,
-        });
-      } catch (error) {
-        return res.status(500).json({
-          success: false,
-          message: "Failed to add free book",
-          error: error.message,
-        });
-      }
-    }
-  } else {
-    if (coursesId.length === 0) {
-      return res.json({ success: false, message: "Please provide Course Id" });
-    }
+  if (coursesId.length > 0) {
     for (const course_id of coursesId) {
       try {
         const course = await Course.findById(course_id);
@@ -60,15 +33,47 @@ exports.capturePayment = async (req, res) => {
         }
         totalAmount += course.price;
       } catch (error) {
-        console.log(error);
         return res.status(500).json({ success: false, message: error.message });
       }
     }
   }
+  if (books.length > 0) {
+    for (const book of books) {
+      if (!book.id || typeof book.price !== "number") {
+        return res
+          .status(400)
+          .json({ success: false, message: "Invalid book data" });
+      }
+      totalAmount += book.price;
+    }
+  }
+  if (totalAmount === 0) {
+    try {
+      if (coursesId.length > 0) {
+        await enrollStudents(coursesId, userId);
+      }
+      if (books.length > 0) {
+        for (const book of books) {
+          await addBookToUser(book, userId);
+        }
+      }
+      return res.status(200).json({
+        success: true,
+        message: "Free content added successfully",
+        free: true,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to add free content",
+        error: error.message,
+      });
+    }
+  }
   const options = {
-    amount: totalAmount * 100,
+    amount: Math.round(totalAmount * 100),
     currency,
-    receipt: Math.random(Date.now()).toString(),
+    receipt: `receipt_${Date.now()}`,
   };
   try {
     const paymentResponse = await instance.instance.orders.create(options);
@@ -77,10 +82,10 @@ exports.capturePayment = async (req, res) => {
       message: paymentResponse,
     });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({
       success: false,
       message: "Could not Initiate Order",
+      razorpayError: error?.error || error.message,
     });
   }
 };
@@ -90,9 +95,8 @@ exports.verifyPayment = async (req, res) => {
     razorpay_order_id,
     razorpay_payment_id,
     razorpay_signature,
-    coursesId,
-    isBook = false,
-    book,
+    coursesId = [],
+    books = [],
   } = req.body;
 
   const userId = req.user.id;
@@ -101,9 +105,7 @@ exports.verifyPayment = async (req, res) => {
     !razorpay_order_id ||
     !razorpay_payment_id ||
     !razorpay_signature ||
-    !userId ||
-    (isBook && !book) ||
-    (!isBook && !coursesId)
+    !userId
   ) {
     return res.status(400).json({ success: false, message: "Missing data" });
   }
@@ -119,71 +121,59 @@ exports.verifyPayment = async (req, res) => {
       .status(400)
       .json({ success: false, message: "Invalid Signature" });
   }
-  if (isBook) {
-    try {
-      await addBookToUser(book, userId);
-      return res.status(200).json({ success: true, message: "Book Purchased" });
-    } catch (error) {
-      return res.status(500).json({ success: false, message: error.message });
-    }
-  } else {
-    try {
+  try {
+    if (coursesId.length > 0) {
       await enrollStudents(coursesId, userId);
-      return res
-        .status(200)
-        .json({ success: true, message: "Payment Verified" });
-    } catch (error) {
-      return res.status(500).json({ success: false, message: error.message });
     }
+    if (books.length > 0) {
+      for (const book of books) {
+        await addBookToUser(book, userId);
+      }
+    }
+    return res
+      .status(200)
+      .json({ success: true, message: "Payment Verified and Access Granted" });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
   }
 };
 
-const enrollStudents = async (courses, userId, res) => {
-  if (!courses || !userId) {
-    return res.status(400).json({
-      success: false,
-      message: "Please Provide data for Courses or UserId",
-    });
-  }
+const enrollStudents = async (courses, userId) => {
+  if (!courses || !userId)
+    throw new Error("Please provide data for Courses or UserId");
+
   for (const courseId of courses) {
-    try {
-      const enrolledCourse = await Course.findOneAndUpdate(
-        { _id: courseId },
-        { $push: { studentsEnrolled: userId } },
-        { new: true }
-      );
-      if (!enrolledCourse) {
-        return res
-          .status(500)
-          .json({ success: false, message: "Course not Found" });
-      }
-      const courseProgress = await CourseProgress.create({
-        courseID: courseId,
-        userId: userId,
-        completedVideos: [],
-      });
-      const enrolledStudent = await User.findByIdAndUpdate(
-        userId,
-        {
-          $push: {
-            courses: courseId,
-            courseProgress: courseProgress._id,
-          },
+    const enrolledCourse = await Course.findOneAndUpdate(
+      { _id: courseId },
+      { $addToSet: { studentsEnrolled: userId } },
+      { new: true }
+    );
+    if (!enrolledCourse) throw new Error("Course not Found");
+
+    const courseProgress = await CourseProgress.create({
+      courseID: courseId,
+      userId: userId,
+      completedVideos: [],
+    });
+    const enrolledStudent = await User.findByIdAndUpdate(
+      userId,
+      {
+        $addToSet: {
+          courses: courseId,
+          courseProgress: courseProgress._id,
         },
-        { new: true }
-      );
-      const emailResponse = await mailSender(
-        enrolledStudent.email,
-        `Successfully Enrolled into ${enrolledCourse.courseName}`,
-        courseEnrollmentEmail(
-          enrolledCourse.courseName,
-          `${enrolledStudent.firstName}`
-        )
-      );
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json({ success: false, message: error.message });
-    }
+      },
+      { new: true }
+    );
+
+    await mailSender(
+      enrolledStudent.email,
+      `Successfully Enrolled into ${enrolledCourse.courseName}`,
+      courseEnrollmentEmail(
+        enrolledCourse.courseName,
+        enrolledStudent.firstName
+      )
+    );
   }
 };
 
