@@ -50,15 +50,22 @@ export default function VideoDetailsSidebar({ setReviewModal }) {
     setVideoBarActive(activeSubSectionId);
   }, [courseSectionData, location.pathname]);
 
+  const fetchNotes = async () => {
+    const res = await getNotes(videoBarActive, token);
+    setNotes(res);
+  };
+
   useEffect(() => {
-    const fetchNotes = async () => {
-      const res = await getNotes(videoBarActive, token);
-      setNotes(res);
-    };
     if (activeTab === "notes" && videoBarActive) {
       fetchNotes();
     }
   }, [activeTab, videoBarActive]);
+
+  const refreshNotes = async () => {
+    if (activeTab === "notes" && videoBarActive) {
+      fetchNotes();
+    }
+  };
 
   const handleDeleteNote = async (noteId) => {
     const confirm = window.confirm(
@@ -96,12 +103,12 @@ export default function VideoDetailsSidebar({ setReviewModal }) {
             <div className="flex items-center gap-2">
               <IconBtn
                 text="Add Review"
-                customClasses="h-[30px] w-[120px] text-sm"
+                customClasses="h-[24px] w-[90px] text-xs !px-0 py-1"
                 onclick={() => setReviewModal(true)}
               />
               <IconBtn
-                text="Notes"
-                customClasses="h-[30px] w-[60px] text-sm"
+                text="Add Note"
+                customClasses="h-[24px] w-[80px] text-xs !px-0 py-1"
                 onclick={() => setNoteModal(true)}
               />
             </div>
@@ -230,7 +237,11 @@ export default function VideoDetailsSidebar({ setReviewModal }) {
         </div>
       </div>
       {noteModal && (
-        <AddNoteModal setNoteModal={setNoteModal} videoId={videoBarActive} />
+        <AddNoteModal
+          setNoteModal={setNoteModal}
+          videoId={videoBarActive}
+          onNoteAdded={refreshNotes}
+        />
       )}
     </>
   );

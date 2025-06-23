@@ -45,6 +45,25 @@ const userSchema = new mongoose.Schema(
         ref: "Course",
       },
     ],
+    ebooks: [
+      {
+        id: {
+          type: String,
+          required: true,
+        },
+        title: {
+          type: String,
+        },
+        authors: [String],
+        thumbnail: {
+          type: String,
+        },
+        purchasedAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
     image: {
       type: String,
       required: true,

@@ -18,36 +18,36 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action) => {
-      const course = action.payload;
-      const index = state.cart.findIndex((item) => item._id === course._id);
-
+      const item = action.payload;
+      const index = state.cart.findIndex((i) => i._id === item._id);
       if (index >= 0) {
-        toast.error("Course already in cart");
+        toast.error("Item already in cart");
         return;
       }
-      state.cart.push(course);
+      state.cart.push(item);
       state.totalItems++;
-      state.total += course.price;
+      state.total += item.price;
+      state.total = parseFloat(state.total.toFixed(2));
       localStorage.setItem("cart", JSON.stringify(state.cart));
       localStorage.setItem("total", JSON.stringify(state.total));
       localStorage.setItem("totalItems", JSON.stringify(state.totalItems));
-      toast.success("Course added to cart");
+      toast.success("Item added to cart");
     },
 
     removeFromCart: (state, action) => {
-      const courseId = action.payload;
-      const index = state.cart.findIndex((item) => item._id === courseId);
+      const itemId = action.payload;
+      const index = state.cart.findIndex((i) => i._id === itemId);
       if (index >= 0) {
         state.totalItems--;
         state.total -= state.cart[index].price;
+        state.total = parseFloat(state.total.toFixed(2));
         state.cart.splice(index, 1);
         localStorage.setItem("cart", JSON.stringify(state.cart));
         localStorage.setItem("total", JSON.stringify(state.total));
         localStorage.setItem("totalItems", JSON.stringify(state.totalItems));
-        toast.success("Course removed from cart");
+        toast.success("Item removed from cart");
       }
     },
-
     resetCart: (state) => {
       state.cart = [];
       state.total = 0;

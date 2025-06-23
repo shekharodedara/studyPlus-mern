@@ -8,6 +8,7 @@ const {
   getEnrolledCourses,
   deleteAccount,
   instructorDashboard,
+  getPurchasedBooks,
 } = require("../controllers/profile");
 
 // Delete User Account
@@ -15,6 +16,7 @@ router.delete("/deleteProfile", auth, deleteAccount);
 router.put("/updateProfile", auth, updateProfile);
 router.get("/getUserDetails", auth, getUserDetails);
 router.get("/getEnrolledCourses", auth, getEnrolledCourses);
+router.get("/purchased-books", auth, getPurchasedBooks);
 router.put("/updateUserProfileImage", auth, updateUserProfileImage);
 router.get("/instructorDashboard", auth, isInstructor, instructorDashboard);
 

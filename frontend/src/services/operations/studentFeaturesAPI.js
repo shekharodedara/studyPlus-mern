@@ -25,9 +25,9 @@ function loadScript(src) {
   });
 }
 
-export async function buyCourse(
+export async function buyItem(
   token,
-  coursesId,
+  { coursesId = [], book = null },
   userDetails,
   navigate,
   dispatch
@@ -37,21 +37,25 @@ export async function buyCourse(
     const res = await loadScript(
       "https://checkout.razorpay.com/v1/checkout.js"
     );
-
     if (!res) {
       toast.error("RazorPay SDK failed to load");
       return;
     }
-
-    // initiate the order
+    const payload = book ? { isBook: true, book } : { coursesId };
     const orderResponse = await apiConnector(
       "POST",
       COURSE_PAYMENT_API,
-      { coursesId },
+      payload,
       {
         Authorization: `Bearer ${token}`,
       }
     );
+    if (orderResponse.data.free) {
+      toast.success("Book added to your library successfully!");
+      navigate("/dashboard/e-books");
+      toast.dismiss(toastId);
+      return;
+    }
     if (!orderResponse.data.success) {
       throw new Error(orderResponse.data.message);
     }
@@ -62,30 +66,35 @@ export async function buyCourse(
       amount: orderResponse.data.message.amount,
       order_id: orderResponse.data.message.id,
       name: "StudyPlus",
-      description: "Thank You for Purchasing the Course",
+      description: book
+        ? `Thank You for Purchasing the Book "${book.title}"`
+        : "Thank You for Purchasing the Course(s)",
       image: rzpLogo,
       prefill: {
         name: userDetails.firstName,
         email: userDetails.email,
       },
       handler: function (response) {
+        const verificationPayload = book
+          ? { ...response, isBook: true, book }
+          : { ...response, coursesId };
         sendPaymentSuccessEmail(
           response,
           orderResponse.data.message.amount,
           token
         );
-        verifyPayment({ ...response, coursesId }, token, navigate, dispatch);
+        verifyPayment(verificationPayload, token, navigate, dispatch);
       },
     };
     const paymentObject = new window.Razorpay(options);
     paymentObject.open();
     paymentObject.on("payment.failed", function (response) {
-      toast.error("oops, payment failed");
-      console.log("payment failed.... ", response.error);
+      toast.error("Oops, payment failed");
+      console.log("Payment failed:", response.error);
     });
   } catch (error) {
-    console.log("PAYMENT API ERROR.....", error);
-    toast.error(error.response?.data?.message);
+    console.log("PAYMENT API ERROR:", error);
+    toast.error(error.response?.data?.message || error.message);
   }
   toast.dismiss(toastId);
 }
@@ -119,8 +128,12 @@ async function verifyPayment(bodyData, token, navigate, dispatch) {
     if (!response.data.success) {
       throw new Error(response.data.message);
     }
-    toast.success("payment Successful, you are addded to the course");
-    navigate("/dashboard/enrolled-courses");
+    toast.success("Payment Successful!");
+    if (bodyData.isBook) {
+      navigate("/dashboard/e-books");
+    } else {
+      navigate("/dashboard/enrolled-courses");
+    }
     dispatch(resetCart());
   } catch (error) {
     console.log("PAYMENT VERIFY ERROR....", error);

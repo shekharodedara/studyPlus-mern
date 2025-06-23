@@ -7,6 +7,7 @@ const {
   GET_USER_DETAILS_API,
   GET_USER_ENROLLED_COURSES_API,
   GET_INSTRUCTOR_DATA_API,
+  GET_USER_PURCHASED_BOOKS_API,
 } = profileEndpoints;
 
 export function getUserDetails(token, navigate) {
@@ -56,6 +57,27 @@ export async function getUserEnrolledCourses(token) {
   } catch (error) {
     console.log("GET_USER_ENROLLED_COURSES_API API ERROR............", error);
     toast.error("Could Not Get Enrolled Courses");
+  }
+  return result;
+}
+
+export async function getUserPurchasedBooks(token) {
+  let result = [];
+  try {
+    const response = await apiConnector(
+      "GET",
+      GET_USER_PURCHASED_BOOKS_API,
+      null,
+      { Authorization: `Bearer ${token}` }
+    );
+
+    if (!response.data.success) {
+      throw new Error(response.data.message);
+    }
+    result = response.data.data;
+  } catch (error) {
+    console.log("GET_PURCHASED_BOOKS_API ERROR:", error);
+    toast.error("Could not fetch purchased books");
   }
   return result;
 }

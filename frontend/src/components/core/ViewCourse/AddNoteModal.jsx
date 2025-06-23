@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 import { addNote } from "../../../services/operations/courseDetailsAPI";
 import IconBtn from "../../common/IconBtn";
 
-export default function AddNoteModal({ setNoteModal, videoId }) {
+export default function AddNoteModal({ setNoteModal, videoId, onNoteAdded }) {
   const { token } = useSelector((state) => state.auth);
   const {
     register,
@@ -27,6 +27,9 @@ export default function AddNoteModal({ setNoteModal, videoId }) {
     );
     if (success) {
       setNoteModal(false);
+      if (typeof onNoteAdded === "function") {
+        onNoteAdded();
+      }
     }
   };
 
@@ -56,11 +59,15 @@ export default function AddNoteModal({ setNoteModal, videoId }) {
         <button
           type="button"
           onClick={() => setNoteModal(false)}
-          className="flex cursor-pointer items-center gap-x-2 rounded-md bg-richblack-300 py-[8px] px-[20px] font-semibold text-richblack-900 hover:bg-richblack-900 hover:text-richblack-300 duration-300"
+          className="flex cursor-pointer items-center gap-x-1 rounded-md bg-richblack-300 py-[4px] px-[12px] text-xs font-semibold text-richblack-900 hover:bg-richblack-900 hover:text-richblack-300 duration-300"
         >
           Cancel
         </button>
-        <IconBtn text="Save Note" type="submit" />
+        <IconBtn
+          text="Save"
+          type="submit"
+          customClasses="h-[28px] w-[75px] text-xs px-0"
+        />
       </div>
     </form>
   );

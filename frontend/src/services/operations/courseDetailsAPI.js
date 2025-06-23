@@ -1,6 +1,6 @@
 import { toast } from "react-hot-toast";
 import { apiConnector } from "../apiConnector";
-import { courseEndpoints, noteEndpoints } from "../apis";
+import { courseEndpoints, noteEndpoints, catalogData } from "../apis";
 
 const {
   COURSE_DETAILS_API,
@@ -21,7 +21,6 @@ const {
   CREATE_RATING_API,
   LECTURE_COMPLETION_API,
 } = courseEndpoints;
-
 const { GET_NOTES_API, ADD_NOTE_API, DELETE_NOTE_API } = noteEndpoints;
 
 export const createCategory = async (categoryData, token) => {
@@ -70,6 +69,24 @@ export const getAllCourses = async () => {
   return result;
 };
 
+export const getCatalogPageData = async (categoryId) => {
+  let result = [];
+  try {
+    const response = await apiConnector(
+      "POST",
+      catalogData.CATALOGPAGEDATA_API,
+      { categoryId: categoryId }
+    );
+    if (!response?.data?.success)
+      throw new Error("Could not Fetch Category page data");
+    result = response?.data?.data;
+  } catch (error) {
+    console.log("CATALOG PAGE DATA API ERROR....", error);
+    result = error.response?.data.data;
+  }
+  return result;
+};
+
 export const fetchCourseDetails = async (courseId) => {
   let result = null;
   try {
@@ -93,13 +110,11 @@ export const fetchCourseCategories = async () => {
   let result = [];
   try {
     const response = await apiConnector("GET", COURSE_CATEGORIES_API);
-    console.log("COURSE_CATEGORIES_API RESPONSE............", response);
     if (!response?.data?.success) {
       throw new Error("Could Not Fetch Course Categories");
     }
     result = response?.data?.data;
   } catch (error) {
-    console.log("COURSE_CATEGORY_API API ERROR............", error);
     toast.error(error.message);
   }
   return result;
@@ -453,3 +468,35 @@ export const deleteNote = async (noteId, token) => {
   }
   return success;
 };
+
+export async function getBooks(
+  category = "bestseller",
+  country = "IN",
+  maxResults = 40,
+  startIndex = 0
+) {
+  const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(
+    category
+  )}&filter=ebooks&maxResults=${maxResults}&startIndex=${startIndex}&printType=books&country=${country}&key=${
+    import.meta.env.VITE_APP_GOOGLE_BOOKS_API_KEY
+  }`;
+
+  const response = await fetch(url);
+  if (!response.ok) throw new Error("Failed to fetch books");
+  return await response.json();
+}
+
+export async function getBookDetails(bookId) {
+  const url = `https://www.googleapis.com/books/v1/volumes/${bookId}?key=${
+    import.meta.env.VITE_APP_GOOGLE_BOOKS_API_KEY
+  }`;
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Failed to fetch book details");
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching book details:", error);
+    throw new Error(error.message || "Failed to load book details");
+  }
+}

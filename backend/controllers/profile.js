@@ -211,6 +211,28 @@ exports.getEnrolledCourses = async (req, res) => {
   }
 };
 
+exports.getPurchasedBooks = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await User.findById(userId).select("ebooks");
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      data: user.ebooks || [],
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching purchased books",
+    });
+  }
+};
+
 exports.instructorDashboard = async (req, res) => {
   try {
     const courseDetails = await Course.find({ instructor: req.user.id });

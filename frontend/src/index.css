@@ -18,6 +18,11 @@ body {
   background: url("./assets/Images/bghome.svg");
 }
 
+.cursor-not-allowed {
+  cursor: not-allowed !important;
+}
+
+
 .gradient_color {
   background: linear-gradient(
       118.19deg,

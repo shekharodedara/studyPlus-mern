@@ -11,7 +11,7 @@ import Footer from "../components/common/Footer";
 import ExploreMore from "../components/core/HomePage/ExploreMore";
 import ReviewSlider from "../components/common/ReviewSlider";
 import Course_Slider from "../components/core/Catalog/Course_Slider";
-import { getCatalogPageData } from "../services/operations/pageAndComponentData";
+import { getCatalogPageData } from "../services/operations/courseDetailsAPI";
 import { MdOutlineRateReview } from "react-icons/md";
 import { FaArrowRight } from "react-icons/fa";
 import { motion } from "framer-motion";

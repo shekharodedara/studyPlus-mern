@@ -14,7 +14,6 @@ const Navbar = () => {
   const { user } = useSelector((state) => state.profile);
   const { totalItems } = useSelector((state) => state.cart);
   const location = useLocation();
-
   const [subLinks, setSubLinks] = useState([]);
   const [loading, setLoading] = useState(false);
 
@@ -38,7 +37,6 @@ const Navbar = () => {
   const [lastScrollY, setLastScrollY] = useState(0);
   useEffect(() => {
     window.addEventListener("scroll", controlNavbar);
-
     return () => {
       window.removeEventListener("scroll", controlNavbar);
     };

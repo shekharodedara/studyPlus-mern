@@ -21,13 +21,11 @@ exports.sendOTP = async (req, res) => {
         message: "User is Already Registered",
       });
     }
-
     const otp = optGenerator.generate(6, {
       upperCaseAlphabets: false,
       lowerCaseAlphabets: false,
       specialChars: false,
     });
-
     const name = email
       .split("@")[0]
       .split(".")
@@ -111,7 +109,6 @@ exports.signup = async (req, res) => {
       about: null,
       contactNumber: null,
     });
-
     let approved = "";
     approved === "Instructor" ? (approved = false) : (approved = true);
     const userData = await User.create({
@@ -150,7 +147,6 @@ exports.login = async (req, res) => {
       });
     }
     let user = await User.findOne({ email }).populate("additionalDetails");
-
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -164,18 +160,15 @@ exports.login = async (req, res) => {
         accountType: user.accountType,
       };
       const token = jwt.sign(payload, process.env.JWT_SECRET, {
-        expiresIn: "24h",
+        expiresIn: "7d",
       });
-
       user = user.toObject();
       user.token = token;
       user.password = undefined;
-
       const cookieOptions = {
         expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000),
         httpOnly: true,
       };
-
       res.cookie("token", token, cookieOptions).status(200).json({
         success: true,
         user,

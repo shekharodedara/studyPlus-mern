@@ -4,7 +4,7 @@ import Footer from "../components/common/Footer";
 import Course_Card from "../components/core/Catalog/Course_Card";
 import Course_Slider from "../components/core/Catalog/Course_Slider";
 import Loading from "./../components/common/Loading";
-import { getCatalogPageData } from "../services/operations/pageAndComponentData";
+import { getCatalogPageData } from "../services/operations/courseDetailsAPI";
 import { fetchCourseCategories } from "./../services/operations/courseDetailsAPI";
 
 function Catalog() {

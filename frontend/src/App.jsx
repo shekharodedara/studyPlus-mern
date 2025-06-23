@@ -28,6 +28,9 @@ import ViewCourse from "./pages/ViewCourse";
 import VideoDetails from "./components/core/ViewCourse/VideoDetails";
 import { ACCOUNT_TYPE } from "./utils/constants";
 import { HiArrowNarrowUp } from "react-icons/hi";
+import Books from "./pages/Books";
+import BookDetails from "./pages/BookDetails";
+import PurchasedBooks from "./components/core/Dashboard/PurchasedBooks";
 
 function App() {
   const { user } = useSelector((state) => state.profile);
@@ -74,6 +77,8 @@ function App() {
         <Route path="/about" element={<About />} />
         <Route path="catalog/:catalogName" element={<Catalog />} />
         <Route path="courses/:courseId" element={<CourseDetails />} />
+        <Route path="/books" element={<Books />} />
+        <Route path="/books/:id" element={<BookDetails />} />
         <Route
           path="signup"
           element={
@@ -126,6 +131,7 @@ function App() {
           {user?.accountType === ACCOUNT_TYPE.STUDENT && (
             <>
               <Route path="dashboard/cart" element={<Cart />} />
+              <Route path="dashboard/e-books" element={<PurchasedBooks />} />
               <Route
                 path="dashboard/enrolled-courses"
                 element={<EnrolledCourses />}
