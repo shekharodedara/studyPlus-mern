@@ -8,6 +8,7 @@ function Books() {
   const [books, setBooks] = useState([]);
   const [loadingBooks, setLoadingBooks] = useState(false);
   const [searchCategory, setSearchCategory] = useState("");
+  const [searchFilter, setSearchFilter] = useState("");
   const [startIndex, setStartIndex] = useState(0);
   const [totalItems, setTotalItems] = useState(0);
   const [error, setError] = useState(null);
@@ -41,7 +42,12 @@ function Books() {
   const handleSearch = (e) => {
     e.preventDefault();
     setStartIndex(0);
-    fetchBooks(searchCategory.trim(), 0);
+    fetchBooks(
+      searchFilter
+        ? `${searchFilter}:${searchCategory.trim()}`
+        : searchCategory.trim(),
+      0
+    );
   };
 
   return (
@@ -54,18 +60,32 @@ function Books() {
               Explore books from Google Books API across all categories.
             </p>
           </div>
-          <form onSubmit={handleSearch} className="flex max-w-xs w-full gap-2">
+          <form
+            onSubmit={handleSearch}
+            className="flex w-full max-w-md overflow-hidden rounded-md border border-richblack-500 bg-richblack-900"
+          >
             <input
               type="text"
-              placeholder="Search by category"
+              placeholder="Search books..."
               value={searchCategory}
               onChange={(e) => setSearchCategory(e.target.value)}
-              className="w-full rounded-md border border-richblack-500 bg-richblack-900 px-3 py-2 text-richblack-5 placeholder-richblack-400 focus:outline-yellow-400"
+              className="flex-1 px-4 py-2 text-richblack-5 bg-transparent placeholder-richblack-400 focus:outline-none"
             />
+            <select
+              value={searchFilter}
+              onChange={(e) => setSearchFilter(e.target.value)}
+              className="px-3 py-2 bg-richblack-900 text-richblack-5 border-l border-richblack-700 focus:outline-none"
+            >
+              <option value="">none</option>
+              <option value="intitle">Title</option>
+              <option value="inauthor">Author</option>
+              <option value="inpublisher">Publisher</option>
+              <option value="subject">Subject</option>
+            </select>
             <button
               type="submit"
-              className="yellowButton px-4"
               disabled={loadingBooks}
+              className="bg-yellow-50 text-richblack-900 px-4 py-2 font-semibold hover:bg-yellow-100 transition-colors duration-200"
             >
               Search
             </button>
