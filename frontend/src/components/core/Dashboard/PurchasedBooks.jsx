@@ -4,6 +4,7 @@ import { getUserPurchasedBooks } from "../../../services/operations/profileAPI";
 
 export default function PurchasedBooks() {
   const { token } = useSelector((state) => state.auth);
+  const [selectedBookId, setSelectedBookId] = useState(null);
   const [books, setBooks] = useState(null);
 
   const fetchBooks = async () => {
@@ -33,6 +34,7 @@ export default function PurchasedBooks() {
         {books?.map((book, index) => (
           <div
             key={index}
+            onClick={() => setSelectedBookId(book.id)}
             className="flex flex-col bg-richblack-800 rounded-lg p-4 border border-richblack-700"
           >
             <img
@@ -51,6 +53,27 @@ export default function PurchasedBooks() {
             </p>
           </div>
         ))}
+        {selectedBookId && (
+          <div className="fixed inset-0 bg-black bg-opacity-60 z-50 flex justify-center items-center">
+            <div className="relative bg-richblack-900 rounded-lg shadow-lg max-w-4xl w-full p-4">
+              <button
+                onClick={() => setSelectedBookId(null)}
+                className="absolute top-2 right-4 text-white text-2xl hover:text-yellow-400"
+              >
+                &times;
+              </button>
+              <iframe
+                src={`https://books.google.co.in/books?id=${selectedBookId}&printsec=frontcover&output=embed`}
+                width="100%"
+                height="600"
+                frameBorder="0"
+                allowFullScreen
+                title="Book Preview"
+                className="rounded-md"
+              ></iframe>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

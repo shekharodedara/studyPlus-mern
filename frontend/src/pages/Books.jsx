@@ -21,7 +21,7 @@ function Books() {
       setError(null);
       const res = await getBooks(
         category || defaultCategory,
-        "IN",
+        "GB",
         maxResults,
         start
       );
@@ -76,7 +76,7 @@ function Books() {
               onChange={(e) => setSearchFilter(e.target.value)}
               className="px-3 py-2 bg-richblack-900 text-richblack-5 border-l border-richblack-700 focus:outline-none"
             >
-              <option value="">none</option>
+              <option value="">-</option>
               <option value="intitle">Title</option>
               <option value="inauthor">Author</option>
               <option value="inpublisher">Publisher</option>

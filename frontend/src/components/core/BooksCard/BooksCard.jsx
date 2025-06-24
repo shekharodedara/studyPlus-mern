@@ -6,7 +6,7 @@ function BooksCard({ title, authors = [], thumbnail, id, price }) {
     price === 0
       ? "Free"
       : typeof price === "number"
-      ? `₹ ${price.toFixed(2)}`
+      ? `€ ${price.toFixed(2)}`
       : null;
 
   return (

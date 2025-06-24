@@ -72,7 +72,7 @@ function BookDetailsCard({ book, user, token, navigate, dispatch }) {
         <h3 className="text-xl font-semibold">{volumeInfo?.title}</h3>
         {isPurchasable ? (
           <p className="text-2xl font-bold text-yellow-50 mt-2">
-            {price === 0 ? "Free" : `₹${price}`}
+            {price === 0 ? "Free" : `€${price}`}
           </p>
         ) : (
           <p className="text-sm text-richblack-300 mt-2">

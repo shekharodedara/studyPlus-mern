@@ -69,7 +69,7 @@ const PurchaseHistory = () => {
                       />
                     </td>
                     <td className={tableDataClass}>{course.title}</td>
-                    <td className={tableDataClass}>₹{course.price}</td>
+                    <td className={tableDataClass}>€{course.price}</td>
                     <td className={tableDataClass}>
                       {formatDate(course.purchasedAt)}
                     </td>
@@ -106,7 +106,7 @@ const PurchaseHistory = () => {
                       />
                     </td>
                     <td className={tableDataClass}>{book.title}</td>
-                    <td className={tableDataClass}>₹{book.price || 0}</td>
+                    <td className={tableDataClass}>€{book.price || 0}</td>
                     <td className={tableDataClass}>
                       {formatDate(book.purchasedAt)}
                     </td>

@@ -114,7 +114,7 @@ export default function Instructor() {
                 <div>
                   <p className="text-lg text-richblack-200">Total Income</p>
                   <p className="text-3xl font-semibold text-richblack-50">
-                    Rs. {totalAmount}
+                    € {totalAmount}
                   </p>
                 </div>
               </div>
@@ -152,7 +152,7 @@ export default function Instructor() {
                         |
                       </p>
                       <p className="text-xs font-medium text-richblack-300">
-                        Rs. {course.price}
+                        €- {course.price}
                       </p>
                     </div>
                   </div>
