@@ -161,6 +161,10 @@ const enrollStudents = async (courses, userId) => {
         $addToSet: {
           courses: courseId,
           courseProgress: courseProgress._id,
+          coursePurchases: {
+            courseId,
+            purchasedAt: new Date(),
+          },
         },
       },
       { new: true }
@@ -188,6 +192,7 @@ const addBookToUser = async (book, userId) => {
           title: book.title,
           authors: book.authors || [],
           thumbnail: book.thumbnail || "",
+          price: book.price,
           purchasedAt: new Date(),
         },
       },
@@ -223,5 +228,49 @@ exports.sendPaymentSuccessEmail = async (req, res) => {
     return res
       .status(500)
       .json({ success: false, message: "Could not send email" });
+  }
+};
+
+exports.getPurchaseHistory = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await User.findById(userId)
+      .populate({
+        path: "courses",
+        select: "courseName thumbnail price createdAt",
+      })
+      .select("ebooks courses");
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+    const courseHistory = user.courses.map(course => ({
+      id: course._id,
+      title: course.courseName,
+      thumbnail: course.thumbnail,
+      price: course.price,
+      purchasedAt: course.createdAt || null,
+    }));
+    const ebookHistory = user.ebooks.map(book => ({
+      id: book.id,
+      title: book.title,
+      thumbnail: book.thumbnail,
+      authors: book.authors,
+      price: book.price,
+      purchasedAt: book.purchasedAt,
+    }));
+    return res.status(200).json({
+      success: true,
+      purchases: {
+        courses: courseHistory,
+        ebooks: ebookHistory,
+      },
+    });
+  } catch (err) {
+    console.error("Error fetching purchase history:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch purchase history",
+    });
   }
 };

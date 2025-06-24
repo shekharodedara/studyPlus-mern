@@ -31,6 +31,7 @@ import { HiArrowNarrowUp } from "react-icons/hi";
 import Books from "./pages/Books";
 import BookDetails from "./pages/BookDetails";
 import PurchasedBooks from "./components/core/Dashboard/PurchasedBooks";
+import PurchaseHistory from "./components/core/Dashboard/PurchaseHistory";
 
 function App() {
   const { user } = useSelector((state) => state.profile);
@@ -136,6 +137,7 @@ function App() {
                 path="dashboard/enrolled-courses"
                 element={<EnrolledCourses />}
               />
+              <Route path="dashboard/purchase-history" element={<PurchaseHistory />} />
             </>
           )}
           {user?.accountType === ACCOUNT_TYPE.INSTRUCTOR && (

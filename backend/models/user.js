@@ -58,6 +58,10 @@ const userSchema = new mongoose.Schema(
         thumbnail: {
           type: String,
         },
+        price: {
+          type: Number,
+          required: true,
+        },
         purchasedAt: {
           type: Date,
           default: Date.now,
@@ -80,7 +84,13 @@ const userSchema = new mongoose.Schema(
         ref: "CourseProgress",
       },
     ],
-  }, // Add timestamps for when the document is created and last modified
+    coursePurchases: [
+      {
+        courseId: { type: mongoose.Schema.Types.ObjectId, ref: "Course" },
+        purchasedAt: { type: Date, default: Date.now },
+      },
+    ],
+  },
   { timestamps: true }
 );
 
