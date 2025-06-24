@@ -36,13 +36,11 @@ exports.getNotes = async (req, res) => {
     });
     return res.status(200).json({ success: true, data: notes });
   } catch (err) {
-    return res
-      .status(500)
-      .json({
-        success: false,
-        message: "Failed to fetch notes",
-        error: err.message,
-      });
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch notes",
+      error: err.message,
+    });
   }
 };
 

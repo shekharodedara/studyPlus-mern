@@ -62,7 +62,6 @@ exports.updateSubSection = async (req, res) => {
     if (title) {
       subSection.title = title;
     }
-
     if (description) {
       subSection.description = description;
     }
@@ -79,7 +78,6 @@ exports.updateSubSection = async (req, res) => {
     const updatedSection = await Section.findById(sectionId).populate(
       "subSection"
     );
-
     return res.json({
       success: true,
       data: updatedSection,
@@ -110,13 +108,11 @@ exports.deleteSubSection = async (req, res) => {
     const subSection = await SubSection.findByIdAndDelete({
       _id: subSectionId,
     });
-
     if (!subSection) {
       return res
         .status(404)
         .json({ success: false, message: "SubSection not found" });
     }
-
     const updatedSection = await Section.findById(sectionId).populate(
       "subSection"
     );
@@ -129,7 +125,6 @@ exports.deleteSubSection = async (req, res) => {
     console.error(error);
     return res.status(500).json({
       success: false,
-
       error: error.message,
       message: "An error occurred while deleting the SubSection",
     });

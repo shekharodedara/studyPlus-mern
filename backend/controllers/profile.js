@@ -24,13 +24,11 @@ exports.updateProfile = async (req, res) => {
     userDetails.firstName = firstName;
     userDetails.lastName = lastName;
     await userDetails.save();
-
     profileDetails.gender = gender;
     profileDetails.dateOfBirth = dateOfBirth;
     profileDetails.about = about;
     profileDetails.contactNumber = contactNumber;
     await profileDetails.save();
-
     const updatedUserDetails = await User.findById(userId).populate({
       path: "additionalDetails",
     });
@@ -191,14 +189,12 @@ exports.getEnrolledCourses = async (req, res) => {
           ) / multiplier;
       }
     }
-
     if (!userDetails) {
       return res.status(400).json({
         success: false,
         message: `Could not find user with id: ${userDetails}`,
       });
     }
-
     return res.status(200).json({
       success: true,
       data: userDetails.courses,

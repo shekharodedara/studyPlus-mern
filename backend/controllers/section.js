@@ -20,7 +20,6 @@ exports.createSection = async (req, res) => {
       },
       { new: true }
     );
-
     const updatedCourseDetails = await Course.findById(courseId).populate({
       path: "courseContent",
       populate: {
@@ -59,7 +58,6 @@ exports.updateSection = async (req, res) => {
         path: "subSection",
       },
     });
-
     res.status(200).json({
       success: true,
       data: updatedCourseDetails,
@@ -86,7 +84,6 @@ exports.deleteSection = async (req, res) => {
         path: "subSection",
       },
     });
-
     res.status(200).json({
       success: true,
       data: updatedCourseDetails,

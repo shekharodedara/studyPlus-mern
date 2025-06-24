@@ -122,7 +122,6 @@ exports.getAllCourses = async (req, res) => {
         select: "firstName lastName email image",
       })
       .exec();
-
     return res.status(200).json({
       success: true,
       data: allCourses,
@@ -175,7 +174,6 @@ exports.getCourseDetails = async (req, res) => {
         totalDurationInSeconds += timeDurationInSeconds;
       });
     });
-
     const totalDuration = convertSecondsToDuration(totalDurationInSeconds);
     return res.status(200).json({
       success: true,
@@ -236,9 +234,7 @@ exports.getFullCourseDetails = async (req, res) => {
         totalDurationInSeconds += timeDurationInSeconds;
       });
     });
-
     const totalDuration = convertSecondsToDuration(totalDurationInSeconds);
-
     return res.status(200).json({
       success: true,
       data: {
@@ -262,11 +258,9 @@ exports.editCourse = async (req, res) => {
     const { courseId } = req.body;
     const updates = req.body;
     const course = await Course.findById(courseId);
-
     if (!course) {
       return res.status(404).json({ error: "Course not found" });
     }
-
     if (req.files) {
       const thumbnail = req.files.thumbnailImage;
       const thumbnailImage = await uploadImageToCloudinary(

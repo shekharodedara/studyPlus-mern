@@ -98,9 +98,7 @@ exports.verifyPayment = async (req, res) => {
     coursesId = [],
     books = [],
   } = req.body;
-
   const userId = req.user.id;
-
   if (
     !razorpay_order_id ||
     !razorpay_payment_id ||
@@ -109,13 +107,11 @@ exports.verifyPayment = async (req, res) => {
   ) {
     return res.status(400).json({ success: false, message: "Missing data" });
   }
-
   const body = razorpay_order_id + "|" + razorpay_payment_id;
   const expectedSignature = crypto
     .createHmac("sha256", process.env.RAZORPAY_SECRET)
     .update(body.toString())
     .digest("hex");
-
   if (expectedSignature !== razorpay_signature) {
     return res
       .status(400)
@@ -141,7 +137,6 @@ exports.verifyPayment = async (req, res) => {
 const enrollStudents = async (courses, userId) => {
   if (!courses || !userId)
     throw new Error("Please provide data for Courses or UserId");
-
   for (const courseId of courses) {
     const enrolledCourse = await Course.findOneAndUpdate(
       { _id: courseId },
@@ -149,7 +144,6 @@ const enrollStudents = async (courses, userId) => {
       { new: true }
     );
     if (!enrolledCourse) throw new Error("Course not Found");
-
     const courseProgress = await CourseProgress.create({
       courseID: courseId,
       userId: userId,
@@ -169,7 +163,6 @@ const enrollStudents = async (courses, userId) => {
       },
       { new: true }
     );
-
     await mailSender(
       enrolledStudent.email,
       `Successfully Enrolled into ${enrolledCourse.courseName}`,
@@ -242,16 +235,18 @@ exports.getPurchaseHistory = async (req, res) => {
       .select("ebooks courses");
 
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
-    const courseHistory = user.courses.map(course => ({
+    const courseHistory = user.courses.map((course) => ({
       id: course._id,
       title: course.courseName,
       thumbnail: course.thumbnail,
       price: course.price,
       purchasedAt: course.createdAt || null,
     }));
-    const ebookHistory = user.ebooks.map(book => ({
+    const ebookHistory = user.ebooks.map((book) => ({
       id: book.id,
       title: book.title,
       thumbnail: book.thumbnail,

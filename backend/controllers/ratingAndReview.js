@@ -14,14 +14,12 @@ exports.createRating = async (req, res) => {
         message: "All fileds are required",
       });
     }
-
     const courseDetails = await Course.findOne(
       { _id: courseId },
       {
         studentsEnrolled: { $elemMatch: { $eq: userId } },
       }
     );
-
     if (!courseDetails) {
       return res.status(404).json({
         success: false,
@@ -32,7 +30,6 @@ exports.createRating = async (req, res) => {
       course: courseId,
       user: userId,
     });
-
     if (alreadyReviewd) {
       return res.status(403).json({
         success: false,
@@ -69,6 +66,7 @@ exports.createRating = async (req, res) => {
     });
   }
 };
+
 exports.getAverageRating = async (req, res) => {
   try {
     const courseId = req.body.courseId;
@@ -118,7 +116,6 @@ exports.getAllRatingReview = async (req, res) => {
         select: "courseName",
       })
       .exec();
-
     return res.status(200).json({
       success: true,
       data: allReviews,
