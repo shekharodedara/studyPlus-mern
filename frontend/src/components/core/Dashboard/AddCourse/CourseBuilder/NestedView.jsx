@@ -17,11 +17,9 @@ export default function NestedView({ handleChangeEditSectionName }) {
   const { course } = useSelector((state) => state.course);
   const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  // States to keep track of mode of modal [add, view, edit]
   const [addSubSection, setAddSubsection] = useState(null);
   const [viewSubSection, setViewSubSection] = useState(null);
   const [editSubSection, setEditSubSection] = useState(null);
-  // to keep track of confirmation modal
   const [confirmationModal, setConfirmationModal] = useState(null);
   const handleDeleleSection = async (sectionId) => {
     const result = await deleteSection({
@@ -86,7 +84,6 @@ export default function NestedView({ handleChangeEditSectionName }) {
                 >
                   <RiDeleteBin6Line className="text-xl text-richblack-300" />
                 </button>
-
                 <span className="font-medium text-richblack-300">|</span>
                 <AiFillCaretDown className={`text-xl text-richblack-300`} />
               </div>

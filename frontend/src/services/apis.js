@@ -7,6 +7,7 @@ export const endpoints = {
   LOGIN_API: BASE_URL + "/auth/login",
   RESETPASSTOKEN_API: BASE_URL + "/auth/reset-password-token",
   RESETPASSWORD_API: BASE_URL + "/auth/reset-password",
+  CHANGE_PASSWORD_API: BASE_URL + "/auth/changepassword",
 };
 
 export const profileEndpoints = {
@@ -14,13 +15,13 @@ export const profileEndpoints = {
   GET_USER_ENROLLED_COURSES_API: BASE_URL + "/profile/getEnrolledCourses",
   GET_USER_PURCHASED_BOOKS_API: BASE_URL + "/profile/purchased-books",
   GET_INSTRUCTOR_DATA_API: BASE_URL + "/profile/instructorDashboard",
-  GET_PURCHASE_HISTORY_API: BASE_URL + "/payment/purchase-history"
 };
 
 export const studentEndpoints = {
   COURSE_PAYMENT_API: BASE_URL + "/payment/capturePayment",
   COURSE_VERIFY_API: BASE_URL + "/payment/verifyPayment",
   SEND_PAYMENT_SUCCESS_EMAIL_API: BASE_URL + "/payment/sendPaymentSuccessEmail",
+  GET_PURCHASE_HISTORY_API: BASE_URL + "/payment/purchase-history",
 };
 
 export const courseEndpoints = {
@@ -60,7 +61,6 @@ export const contactusEndpoint = {
 export const settingsEndpoints = {
   UPDATE_DISPLAY_PICTURE_API: BASE_URL + "/profile/updateUserProfileImage",
   UPDATE_PROFILE_API: BASE_URL + "/profile/updateProfile",
-  CHANGE_PASSWORD_API: BASE_URL + "/auth/changepassword",
   DELETE_PROFILE_API: BASE_URL + "/profile/deleteProfile",
 };
 

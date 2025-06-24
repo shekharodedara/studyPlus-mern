@@ -8,7 +8,6 @@ import Img from "./../../common/Img";
 export default function EnrolledCourses() {
   const { token } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-
   const [enrolledCourses, setEnrolledCourses] = useState(null);
   const getEnrolledCourses = async () => {
     try {

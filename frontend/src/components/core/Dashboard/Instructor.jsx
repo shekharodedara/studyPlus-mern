@@ -3,8 +3,8 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { fetchInstructorCourses } from "../../../services/operations/courseDetailsAPI";
 import { getInstructorData } from "../../../services/operations/profileAPI";
-import InstructorChart from "./InstructorDashboard/InstructorChart";
 import Img from "./../../common/Img";
+import InstructorChart from "./InstructorChart";
 
 export default function Instructor() {
   const { token } = useSelector((state) => state.auth);
@@ -43,7 +43,6 @@ export default function Instructor() {
               <p className="w-[200px] h-4 rounded-xl skeleton"></p>
               <p className="w-[100px] h-4 rounded-xl skeleton"></p>
             </div>
-
             <div className="flex justify-center items-center flex-col">
               <div className="w-[80%] h-24 rounded-xl mt-5 skeleton"></div>
               <div className="w-60 h-60 rounded-full  mt-4 grid place-items-center skeleton"></div>
@@ -82,7 +81,6 @@ export default function Instructor() {
           Let's start something new
         </p>
       </div>
-
       {loading ? (
         <div>{skItem()}</div>
       ) : courses.length > 0 ? (

@@ -4,7 +4,6 @@ import { Pie } from "react-chartjs-2";
 Chart.register(...registerables);
 
 export default function InstructorChart({ courses }) {
-  // State to keep track of the currently selected chart
   const [currChart, setCurrChart] = useState("students");
   const generateRandomColors = (numColors) => {
     const colors = [];
@@ -52,7 +51,6 @@ export default function InstructorChart({ courses }) {
         >
           Students
         </button>
-
         <button
           onClick={() => setCurrChart("income")}
           className={`rounded-sm p-1 px-3 transition-all duration-200 ${

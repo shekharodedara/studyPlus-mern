@@ -1,5 +1,4 @@
 import { useSelector } from "react-redux";
-
 import RenderCartItems from "./RenderCartItems";
 import RenderTotalAmount from "./RenderTotalAmount";
 

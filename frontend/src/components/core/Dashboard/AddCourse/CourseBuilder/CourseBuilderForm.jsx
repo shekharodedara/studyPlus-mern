@@ -15,6 +15,7 @@ import {
 } from "../../../../../slices/courseSlice";
 import IconBtn from "../../../../common/IconBtn";
 import NestedView from "./NestedView";
+
 export default function CourseBuilderForm() {
   const {
     register,
@@ -22,18 +23,14 @@ export default function CourseBuilderForm() {
     setValue,
     formState: { errors },
   } = useForm();
-
   const { course } = useSelector((state) => state.course);
   const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-
   const [loading, setLoading] = useState(false);
   const [editSectionName, setEditSectionName] = useState(null);
   const onSubmit = async (data) => {
     setLoading(true);
-
     let result;
-
     if (editSectionName) {
       result = await updateSection(
         {
@@ -79,7 +76,6 @@ export default function CourseBuilderForm() {
       toast.error("Please add atleast one lecture in each section");
       return;
     }
-    // all set go ahead
     dispatch(setStep(3));
   };
   const goBack = () => {

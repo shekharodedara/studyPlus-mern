@@ -1,14 +1,13 @@
 import { toast } from "react-hot-toast";
 import { setLoading, setUser } from "../../slices/profileSlice";
 import { apiConnector } from "../apiConnector";
-import { profileEndpoints } from "../apis";
+import { profileEndpoints, studentEndpoints } from "../apis";
 import { logout } from "./authAPI";
 const {
   GET_USER_DETAILS_API,
   GET_USER_ENROLLED_COURSES_API,
   GET_INSTRUCTOR_DATA_API,
   GET_USER_PURCHASED_BOOKS_API,
-  GET_PURCHASE_HISTORY_API,
 } = profileEndpoints;
 
 export function getUserDetails(token, navigate) {
@@ -79,7 +78,7 @@ export async function getUserPurchasedBooks(token) {
 export async function getPurchaseHistory(token) {
   let result = [];
   try {
-    const response = await apiConnector("GET", GET_PURCHASE_HISTORY_API, null, {
+    const response = await apiConnector("GET", studentEndpoints.GET_PURCHASE_HISTORY_API, null, {
       Authorization: `Bearer ${token}`,
     });
     if (!response.data.success) {

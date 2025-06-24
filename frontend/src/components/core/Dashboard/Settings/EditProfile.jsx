@@ -1,10 +1,8 @@
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-
 import { updateProfile } from "../../../../services/operations/SettingsAPI";
 import IconBtn from "../../../common/IconBtn";
-
 const genders = ["Male", "Female", "Non-Binary", "Prefer not to say", "Other"];
 
 export default function EditProfile() {
@@ -12,7 +10,6 @@ export default function EditProfile() {
   const { token } = useSelector((state) => state.auth);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
   const {
     register,
     handleSubmit,
@@ -33,7 +30,6 @@ export default function EditProfile() {
           <h2 className="text-lg font-semibold text-richblack-5">
             Profile Information
           </h2>
-
           <div className="flex flex-col gap-5 lg:flex-row">
             <div className="flex flex-col gap-2 lg:w-[48%]">
               <label htmlFor="firstName" className="lable-style">
@@ -54,7 +50,6 @@ export default function EditProfile() {
                 </span>
               )}
             </div>
-
             <div className="flex flex-col gap-2 lg:w-[48%]">
               <label htmlFor="lastName" className="lable-style">
                 Last Name
@@ -75,7 +70,6 @@ export default function EditProfile() {
               )}
             </div>
           </div>
-
           <div className="flex flex-col gap-5 lg:flex-row">
             <div className="flex flex-col gap-2 lg:w-[48%]">
               <label htmlFor="dateOfBirth" className="lable-style">
@@ -132,7 +126,6 @@ export default function EditProfile() {
               )}
             </div>
           </div>
-
           <div className="flex flex-col gap-5 lg:flex-row">
             <div className="flex flex-col gap-2 lg:w-[48%]">
               <label htmlFor="contactNumber" className="lable-style">
@@ -160,7 +153,6 @@ export default function EditProfile() {
                 </span>
               )}
             </div>
-
             <div className="flex flex-col gap-2 lg:w-[48%]">
               <label htmlFor="about" className="lable-style">
                 About
@@ -182,7 +174,6 @@ export default function EditProfile() {
             </div>
           </div>
         </div>
-
         <div className="flex justify-end gap-2">
           <button
             onClick={() => {

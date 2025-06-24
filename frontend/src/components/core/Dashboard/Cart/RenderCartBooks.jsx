@@ -23,7 +23,9 @@ export default function RenderCartBooks() {
               className="h-[148px] w-[220px] rounded-lg object-contain bg-white"
             />
             <div className="flex flex-col space-y-1">
-              <p className="text-lg font-medium text-richblack-5">{item?.title}</p>
+              <p className="text-lg font-medium text-richblack-5">
+                {item?.title}
+              </p>
               {item?.authors && (
                 <p className="text-sm text-richblack-300">
                   {item?.authors.join(", ")}

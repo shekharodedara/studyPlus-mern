@@ -25,9 +25,9 @@ export default function ChipInput({
   }, []);
 
   useEffect(() => {
-    setValue(name, chips); // "Updates value whenever 'chips' is modified
+    setValue(name, chips);
   }, [chips]);
-  // Function to handle user input when chips are added
+
   const handleKeyDown = (event) => {
     if (event.key === "Enter" || event.key === ",") {
       event.preventDefault();

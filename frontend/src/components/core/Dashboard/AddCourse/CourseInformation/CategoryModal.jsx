@@ -1,23 +1,24 @@
-import { useState } from "react"
+import { useState } from "react";
 
 export default function CategoryModal({ onClose, onSubmit }) {
-  const [form, setForm] = useState({ name: "", description: "" })
+  const [form, setForm] = useState({ name: "", description: "" });
 
   const handleChange = (e) => {
-    const { name, value } = e.target
-    setForm((prev) => ({ ...prev, [name]: value }))
-  }
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = () => {
-    if (form.name.trim() === "") return
-    onSubmit(form)
-  }
+    if (form.name.trim() === "") return;
+    onSubmit(form);
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="w-[90%] max-w-md rounded bg-richblack-800 p-6 shadow-lg">
-        <h2 className="mb-4 text-lg font-semibold text-richblack-5">Add New Category</h2>
-
+        <h2 className="mb-4 text-lg font-semibold text-richblack-5">
+          Add New Category
+        </h2>
         <div className="space-y-4">
           <div className="flex flex-col">
             <label className="text-sm text-richblack-300">Name</label>
@@ -30,7 +31,6 @@ export default function CategoryModal({ onClose, onSubmit }) {
               placeholder="e.g. Data Science"
             />
           </div>
-
           <div className="flex flex-col">
             <label className="text-sm text-richblack-300">Description</label>
             <textarea
@@ -43,7 +43,6 @@ export default function CategoryModal({ onClose, onSubmit }) {
             />
           </div>
         </div>
-
         <div className="mt-6 flex justify-end space-x-4">
           <button
             onClick={onClose}
@@ -60,5 +59,5 @@ export default function CategoryModal({ onClose, onSubmit }) {
         </div>
       </div>
     </div>
-  )
+  );
 }

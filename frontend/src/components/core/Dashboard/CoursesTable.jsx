@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import "react-super-responsive-table/dist/SuperResponsiveTableStyle.css";
 import { useState } from "react";
@@ -7,15 +7,15 @@ import { FiEdit2 } from "react-icons/fi";
 import { HiClock } from "react-icons/hi";
 import { RiDeleteBin6Line } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import { formatDate } from "../../../../services/formatDate";
+import toast from "react-hot-toast";
 import {
   deleteCourse,
   fetchInstructorCourses,
-} from "../../../../services/operations/courseDetailsAPI";
-import { COURSE_STATUS } from "../../../../utils/constants";
-import ConfirmationModal from "../../../common/ConfirmationModal";
-import Img from "./../../../common/Img";
-import toast from "react-hot-toast";
+} from "../../../services/operations/courseDetailsAPI";
+import { COURSE_STATUS } from "../../../utils/constants";
+import { formatDate } from "../../../services/formatDate";
+import ConfirmationModal from "../../common/ConfirmationModal";
+import Img from "../../common/Img";
 
 export default function CoursesTable({
   courses,
@@ -25,7 +25,6 @@ export default function CoursesTable({
 }) {
   const navigate = useNavigate();
   const { token } = useSelector((state) => state.auth);
-
   const [confirmationModal, setConfirmationModal] = useState(null);
   const TRUNCATE_LENGTH = 25;
   const handleCourseDelete = async (courseId) => {
@@ -45,11 +44,9 @@ export default function CoursesTable({
       <div className="flex border-b border-richblack-800 px-6 py-8 w-full">
         <div className="flex flex-1 gap-x-4 ">
           <div className="h-[148px] min-w-[300px] rounded-xl skeleton "></div>
-
           <div className="flex flex-col w-[40%]">
             <p className="h-5 w-[50%] rounded-xl skeleton"></p>
             <p className="h-20 w-[60%] rounded-xl mt-3 skeleton"></p>
-
             <p className="h-2 w-[20%] rounded-xl skeleton mt-3"></p>
             <p className="h-2 w-[20%] rounded-xl skeleton mt-2"></p>
           </div>
@@ -103,7 +100,6 @@ export default function CoursesTable({
                     alt={course?.courseName}
                     className="h-[148px] min-w-[270px] max-w-[270px] rounded-lg object-cover"
                   />
-
                   <div className="flex flex-col">
                     <p className="text-lg font-semibold text-richblack-5 capitalize">
                       {course.courseName}
@@ -144,7 +140,6 @@ export default function CoursesTable({
                 <Td className="text-sm font-medium text-richblack-100">
                   ₹{course.price}
                 </Td>
-
                 <Td className="text-sm font-medium text-richblack-100 ">
                   <button
                     disabled={loading}

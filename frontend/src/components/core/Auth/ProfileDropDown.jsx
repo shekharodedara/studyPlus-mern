@@ -27,7 +27,6 @@ export default function ProfileDropdown() {
         />
         <AiOutlineCaretDown className="text-sm text-richblack-100" />
       </div>
-
       {open && (
         <div
           onClick={(e) => e.stopPropagation()}
@@ -40,7 +39,6 @@ export default function ProfileDropdown() {
               Dashboard
             </div>
           </Link>
-
           <div
             onClick={() => {
               dispatch(logout(navigate));

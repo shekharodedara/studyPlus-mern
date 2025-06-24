@@ -83,7 +83,6 @@ export function login(email, password, navigate) {
         email,
         password,
       });
-      console.log("LOGIN API RESPONSE............", response);
       if (!response.data.success) {
         throw new Error(response.data.message);
       }
@@ -116,14 +115,13 @@ export function getPasswordResetToken(email, setEmailSent) {
       const response = await apiConnector("POST", RESETPASSTOKEN_API, {
         email,
       });
-      console.log("RESET PASS TOKEN RESPONSE............", response);
       if (!response.data.success) {
         throw new Error(response.data.message);
       }
       toast.success("Reset Email Sent");
       setEmailSent(true);
     } catch (error) {
-      console.log("RESET PASS TOKEN ERROR............", error);
+      console.log("RESET PASS TOKEN ERROR:", error);
       toast.error(error.response?.data?.message);
     }
     toast.dismiss(toastId);
@@ -141,14 +139,13 @@ export function resetPassword(password, confirmPassword, token, navigate) {
         confirmPassword,
         token,
       });
-      console.log("RESETPASSWORD RESPONSE............", response);
       if (!response.data.success) {
         throw new Error(response.data.message);
       }
       toast.success("Password Reset Successfully");
       navigate("/login");
     } catch (error) {
-      console.log("RESETPASSWORD ERROR............", error);
+      console.log("RESETPASSWORD ERROR:", error);
       toast.error(error.response?.data?.message);
     }
     toast.dismiss(toastId);

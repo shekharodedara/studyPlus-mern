@@ -19,7 +19,7 @@ import Dashboard from "./pages/Dashboard";
 import MyProfile from "./components/core/Dashboard/MyProfile";
 import Settings from "./components/core/Dashboard/Settings/Settings";
 import MyCourses from "./components/core/Dashboard/MyCourses";
-import EditCourse from "./components/core/Dashboard/EditCourse/EditCourse";
+import EditCourse from "./components/core/Dashboard/EditCourse";
 import Instructor from "./components/core/Dashboard/Instructor";
 import Cart from "./components/core/Dashboard/Cart/Cart";
 import EnrolledCourses from "./components/core/Dashboard/EnrolledCourses";
@@ -137,7 +137,10 @@ function App() {
                 path="dashboard/enrolled-courses"
                 element={<EnrolledCourses />}
               />
-              <Route path="dashboard/purchase-history" element={<PurchaseHistory />} />
+              <Route
+                path="dashboard/purchase-history"
+                element={<PurchaseHistory />}
+              />
             </>
           )}
           {user?.accountType === ACCOUNT_TYPE.INSTRUCTOR && (

@@ -40,7 +40,7 @@ export default function Upload({
       ? { "image/*": [".jpeg", ".jpg", ".png"] }
       : { "video/*": [".mp4"] },
     onDrop,
-    noClick: true, // disable automatic file picker on click
+    noClick: true,
     noKeyboard: true,
   });
 

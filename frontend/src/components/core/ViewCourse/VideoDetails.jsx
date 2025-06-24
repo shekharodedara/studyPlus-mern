@@ -59,14 +59,11 @@ const VideoDetails = () => {
     const currentSectionIndx = courseSectionData.findIndex(
       (data) => data._id === sectionId
     );
-
     const noOfSubsections =
       courseSectionData[currentSectionIndx].subSection.length;
-
     const currentSubSectionIndx = courseSectionData[
       currentSectionIndx
     ].subSection.findIndex((data) => data._id === subSectionId);
-
     if (currentSubSectionIndx !== noOfSubsections - 1) {
       const nextSubSectionId =
         courseSectionData[currentSectionIndx].subSection[
@@ -141,7 +138,6 @@ const VideoDetails = () => {
     }
     setLoading(false);
   };
-
   const { courseViewSidebar } = useSelector((state) => state.sidebar);
   if (courseViewSidebar && window.innerWidth <= 640) return;
 

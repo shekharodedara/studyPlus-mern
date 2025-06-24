@@ -47,13 +47,13 @@ function Catalog() {
   return (
     <>
       {loading ? (
-      <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center">
-        <Loading />
-      </div>
+        <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center">
+          <Loading />
+        </div>
       ) : !catalogPageData ? (
-      <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center text-white text-4xl">
-        No Courses found for selected Category
-      </div>
+        <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center text-white text-4xl">
+          No Courses found for selected Category
+        </div>
       ) : (
         <>
           <div className="box-content bg-richblack-800 px-4">
@@ -96,13 +96,17 @@ function Catalog() {
                 New
               </p>
             </div>
-            <Course_Slider Courses={catalogPageData?.selectedCategory?.courses} />
+            <Course_Slider
+              Courses={catalogPageData?.selectedCategory?.courses}
+            />
           </div>
           <div className="mx-auto box-content w-full max-w-maxContentTab px-4 py-12 lg:max-w-maxContent">
             <div className="section_heading">
               Top courses in {catalogPageData?.differentCategory?.name}
             </div>
-            <Course_Slider Courses={catalogPageData?.differentCategory?.courses} />
+            <Course_Slider
+              Courses={catalogPageData?.differentCategory?.courses}
+            />
           </div>
           <div className="mx-auto box-content w-full max-w-maxContentTab px-4 py-12 lg:max-w-maxContent">
             <div className="section_heading">Frequently Bought</div>
@@ -118,7 +122,6 @@ function Catalog() {
           </div>
         </>
       )}
-
       <Footer />
     </>
   );
