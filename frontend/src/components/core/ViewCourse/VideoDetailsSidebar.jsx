@@ -156,14 +156,11 @@ export default function VideoDetailsSidebar({ setReviewModal }) {
                         {section?.sectionName}
                       </div>
                       <div className="flex items-center gap-3">
-                        <span className="text-[12px] font-medium">
-                          Lessons {section?.subSection.length}
-                        </span>
                         <span
                           className={`${
                             activeStatus === section?._id
                               ? "rotate-0"
-                              : "rotate-180"
+                              : "rotate-90"
                           } transition-all duration-500`}
                         >
                           <BsChevronDown />

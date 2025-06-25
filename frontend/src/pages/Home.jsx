@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import HighlightText from "../components/core/HomePage/HighlightText";
 import CTAButton from "../components/core/HomePage/Button";
 import CodeBlocks from "../components/core/HomePage/CodeBlocks";
@@ -43,10 +42,11 @@ const randomImges = [
 ];
 
 const Home = () => {
+  const { user } = useSelector((state) => state.profile);
   const [backgroundImg, setBackgroundImg] = useState(null);
   const [CatalogPageData, setCatalogPageData] = useState(null);
   const categoryID = "";
-
+  const isLoggedIn = !!user?.accountType;
   const dispatch = useDispatch();
   useEffect(() => {
     const bg = randomImges[Math.floor(Math.random() * randomImges.length)];
@@ -77,20 +77,22 @@ const Home = () => {
       </div>
       <div className=" ">
         <div className="relative h-[450px] md:h-[550px] justify-center mx-auto flex flex-col w-11/12 max-w-maxContent items-center text-white ">
-          <Link to={"/signup"}>
-            <div
-              className="z-0 group p-1 mx-auto rounded-full bg-richblack-800 font-bold text-richblack-200
-                                        transition-all duration-200 hover:scale-95 w-fit"
-            >
+          {user?.accountType === "Student" && (
+            <a href="/signup" target="_blank" rel="noopener noreferrer">
               <div
-                className="flex flex-row items-center gap-2 rounded-full px-10 py-[5px]
-                              transition-all duration-200 group-hover:bg-richblack-900"
+                className="z-0 group p-1 mx-auto rounded-full bg-richblack-800 font-bold text-richblack-200
+      transition-all duration-200 hover:scale-95 w-fit"
               >
-                <p>Become an Instructor</p>
-                <FaArrowRight />
+                <div
+                  className="flex flex-row items-center gap-2 rounded-full px-10 py-[5px]
+        transition-all duration-200 group-hover:bg-richblack-900"
+                >
+                  <p>Become an Instructor</p>
+                  <FaArrowRight />
+                </div>
               </div>
-            </div>
-          </Link>
+            </a>
+          )}
           <motion.div
             variants={fadeIn("left", 0.1)}
             initial="hidden"
@@ -113,14 +115,16 @@ const Home = () => {
             including hands-on projects, quizzes, and personalized feedback from
             instructors.
           </motion.div>
-          <div className="flex flex-row gap-7 mt-8">
-            <CTAButton active={true} linkto={"/signup"}>
-              Learn More
-            </CTAButton>
-            <CTAButton active={false} linkto={"/login"}>
-              Book a Demo
-            </CTAButton>
-          </div>
+          {!isLoggedIn && (
+            <div className="flex flex-row gap-7 mt-8">
+              <CTAButton active={true} linkto={"/signup"}>
+                Learn More
+              </CTAButton>
+              <CTAButton active={false} linkto={"/login"}>
+                Book a Demo
+              </CTAButton>
+            </div>
+          )}
         </div>
         <div className="relative mx-auto flex flex-col w-11/12 max-w-maxContent items-center text-white justify-between">
           <div className="">
@@ -138,7 +142,7 @@ const Home = () => {
               }
               ctabtn1={{
                 btnText: "try it yourself",
-                linkto: "/signup",
+                linkto: !isLoggedIn ? "/signup" : "",
                 active: true,
               }}
               ctabtn2={{
@@ -165,7 +169,7 @@ const Home = () => {
               }
               ctabtn1={{
                 btnText: "Continue Lesson",
-                link: "/signup",
+                link: !isLoggedIn ? "/signup" : "",
                 active: true,
               }}
               ctabtn2={{
@@ -199,13 +203,16 @@ const Home = () => {
             <div className="w-11/12 max-w-maxContent flex flex-col items-center justify-between gap-5 mx-auto">
               <div className="h-[150px]"></div>
               <div className="flex flex-row gap-7 text-white ">
-                <CTAButton active={true} linkto={"/signup"}>
+                <CTAButton active={true} linkto={!isLoggedIn ? "/signup" : "/"}>
                   <div className="flex items-center gap-3">
                     Explore Full Catalog
                     <FaArrowRight />
                   </div>
                 </CTAButton>
-                <CTAButton active={false} linkto={"/signup"}>
+                <CTAButton
+                  active={false}
+                  linkto={!isLoggedIn ? "/signup" : "/"}
+                >
                   <div>Learn more</div>
                 </CTAButton>
               </div>
@@ -223,9 +230,11 @@ const Home = () => {
                   be a competitive specialist requires more than professional
                   skills.
                 </div>
-                <CTAButton active={true} linkto={"/signup"}>
-                  <div>Learn more</div>
-                </CTAButton>
+                {!isLoggedIn && (
+                  <CTAButton active={true} linkto={"/signup"}>
+                    <div>Learn more</div>
+                  </CTAButton>
+                )}
               </div>
             </div>
             <TimelineSection />

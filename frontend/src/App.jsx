@@ -83,9 +83,9 @@ function App() {
         <Route
           path="signup"
           element={
-            <OpenRoute>
+            // <OpenRoute>
               <Signup />
-            </OpenRoute>
+            // </OpenRoute>
           }
         />
         <Route

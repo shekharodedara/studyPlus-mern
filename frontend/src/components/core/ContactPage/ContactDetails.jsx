@@ -15,7 +15,7 @@ const contactDetails = [
     heading: "Visit us",
     description: "Come and say hello at our office HQ.",
     details:
-      "Akshya Nagar 1st Block 1st Cross, Rammurthy nagar, Bangalore-560016",
+      "1st Floor, 12 Rue de la République, 1st Arrondissement, 75001 Paris, France",
   },
   {
     icon: "IoCall",

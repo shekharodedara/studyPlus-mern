@@ -13,7 +13,7 @@ const { default: mongoose } = require("mongoose");
 exports.capturePayment = async (req, res) => {
   const { coursesId = [], books = [] } = req.body;
   const userId = req.user.id;
-  const currency = "INR";
+  const currency = "EUR";
   let totalAmount = 0;
   if (coursesId.length > 0) {
     for (const course_id of coursesId) {

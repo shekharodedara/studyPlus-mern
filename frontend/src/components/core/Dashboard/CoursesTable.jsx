@@ -64,7 +64,7 @@ export default function CoursesTable({
               Courses
             </Th>
             <Th className="text-left text-sm font-medium uppercase text-richblack-100">
-              Duration
+              Lessons
             </Th>
             <Th className="text-left text-sm font-medium uppercase text-richblack-100">
               Price
@@ -135,7 +135,7 @@ export default function CoursesTable({
                   </div>
                 </Td>
                 <Td className="text-sm font-medium text-richblack-100">
-                  2hr 30min
+                  {course?.courseContent.length}
                 </Td>
                 <Td className="text-sm font-medium text-richblack-100">
                   €{course.price}

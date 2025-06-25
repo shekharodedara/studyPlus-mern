@@ -261,29 +261,36 @@ exports.editCourse = async (req, res) => {
     if (!course) {
       return res.status(404).json({ error: "Course not found" });
     }
-    if (req.files) {
-      const thumbnail = req.files.thumbnailImage;
+    const oldCategoryId = course.category?.toString();
+    if (req.files?.thumbnailImage) {
       const thumbnailImage = await uploadImageToCloudinary(
-        thumbnail,
+        req.files.thumbnailImage,
         process.env.FOLDER_NAME
       );
       course.thumbnail = thumbnailImage.secure_url;
     }
     for (const key in updates) {
-      if (updates.hasOwnProperty(key)) {
-        if (key === "tag" || key === "instructions") {
-          course[key] = JSON.parse(updates[key]);
-        } else {
-          course[key] = updates[key];
-        }
+      if (Object.hasOwnProperty.call(updates, key)) {
+        course[key] =
+          key === "tag" || key === "instructions"
+            ? JSON.parse(updates[key])
+            : updates[key];
       }
     }
     course.updatedAt = Date.now();
     await course.save();
-
-    const updatedCourse = await Course.findOne({
-      _id: courseId,
-    })
+    const newCategoryId = updates.category;
+    if (newCategoryId && newCategoryId !== oldCategoryId) {
+      if (oldCategoryId) {
+        await Category.findByIdAndUpdate(oldCategoryId, {
+          $pull: { courses: courseId },
+        });
+      }
+      await Category.findByIdAndUpdate(newCategoryId, {
+        $addToSet: { courses: courseId },
+      });
+    }
+    const updatedCourse = await Course.findOne({ _id: courseId })
       .populate({
         path: "instructor",
         populate: {
@@ -305,7 +312,6 @@ exports.editCourse = async (req, res) => {
       data: updatedCourse,
     });
   } catch (error) {
-    console.error(error);
     res.status(500).json({
       success: false,
       message: "Error while updating course",

@@ -22,7 +22,7 @@ const CodeBlocks = ({
         <div className="text-richblack-300 text-base font-bold w-[85%] -mt-3">
           {subheading}
         </div>
-        <div className="flex gap-7 mt-7">
+        {ctabtn1.link && (<div className="flex gap-7 mt-7">
           <CTAButton active={ctabtn1.active} linkto={ctabtn1.link}>
             <div className="flex items-center gap-2">
               {ctabtn1.btnText}
@@ -32,7 +32,7 @@ const CodeBlocks = ({
           <CTAButton active={ctabtn2.active} linkto={ctabtn2.link}>
             {ctabtn2.btnText}
           </CTAButton>
-        </div>
+        </div>)}
       </div>
       <div className="h-fit code-border border border-richblack-700 rounded-xl flex flex-row py-3 text-[10px] sm:text-sm leading-[18px] sm:leading-6 relative w-[100%] lg:w-[470px]">
         <div className="text-center flex flex-col  w-[10%] select-none text-richblack-400 font-inter font-bold ">

@@ -48,12 +48,17 @@ export default function CourseInformationForm() {
       setValue("coursePrice", course.price);
       setValue("courseTags", course.tag);
       setValue("courseBenefits", course.whatYouWillLearn);
-      setValue("courseCategory", course.category);
       setValue("courseRequirements", course.instructions);
       setValue("courseImage", course.thumbnail);
     }
     getCategories();
   }, []);
+
+  useEffect(() => {
+    if (editCourse && course?.category?._id && courseCategories.length > 0) {
+      setValue("courseCategory", course.category._id);
+    }
+  }, [editCourse, course, courseCategories, setValue]);
 
   const handleAddCategory = async (newCategory) => {
     try {
@@ -240,7 +245,6 @@ export default function CourseInformationForm() {
             Course Category is required
           </span>
         )}
-        {/* Add Category Button */}
         <div className="mt-2 flex justify-start">
           <button
             type="button"
