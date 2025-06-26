@@ -461,8 +461,8 @@ export async function getBooks(
   return await response.json();
 }
 
-export async function getBookDetails(bookId) {
-  const url = `https://www.googleapis.com/books/v1/volumes/${bookId}?key=${
+export async function getBookDetails(bookId, country = "IN") {
+  const url = `https://www.googleapis.com/books/v1/volumes/${bookId}?country=${country}&key=${
     import.meta.env.VITE_APP_GOOGLE_BOOKS_API_KEY
   }`;
   try {

@@ -81,7 +81,7 @@ export default function VideoDetailsSidebar({ setReviewModal }) {
   return (
     <>
       <div className="flex h-[calc(100vh-3.5rem)] w-[320px] max-w-[350px] flex-col border-r-[1px] border-r-richblack-700 bg-richblack-800">
-        <div className="mx-5 flex flex-col items-start justify-between gap-2 gap-y-4 border-b border-richblack-600 py-5 text-richblack-25">
+        <div className="mx-5 flex flex-col items-start justify-between gap-2 gap-y-4 border-richblack-600 py-5 text-richblack-25">
           <div className="flex w-full items-center justify-between">
             <div
               className="sm:hidden text-white cursor-pointer"
@@ -120,22 +120,22 @@ export default function VideoDetailsSidebar({ setReviewModal }) {
             </p>
           </div>
         </div>
-        <div className="flex">
+        <div className="flex rounded-md overflow-hidden">
           <button
-            className={`w-1/2 py-2 text-center text-sm font-medium ${
+            className={`w-1/2 py-2 text-center text-sm font-medium transition-colors duration-200 ${
               activeTab === "details"
                 ? "bg-richblack-700 text-yellow-50"
-                : "bg-richblack-900 text-richblack-300"
+                : "bg-richblack-900 text-richblack-300 hover:bg-richblack-800"
             }`}
             onClick={() => setActiveTab("details")}
           >
             Lessons
           </button>
           <button
-            className={`w-1/2 py-2 text-center text-sm font-medium ${
+            className={`w-1/2 py-2 text-center text-sm font-medium transition-colors duration-200 ${
               activeTab === "notes"
                 ? "bg-richblack-700 text-yellow-50"
-                : "bg-richblack-900 text-richblack-300"
+                : "bg-richblack-900 text-richblack-300 hover:bg-richblack-800"
             }`}
             onClick={() => setActiveTab("notes")}
           >
@@ -151,7 +151,7 @@ export default function VideoDetailsSidebar({ setReviewModal }) {
                     className="mt-2 cursor-pointer text-sm text-richblack-5"
                     onClick={() => setActiveStatus(section?._id)}
                   >
-                    <div className="flex justify-between bg-richblack-700 px-5 py-4">
+                    <div className="flex justify-between bg-richblack-700 px-5 py-3">
                       <div className="w-[70%] font-semibold">
                         {section?.sectionName}
                       </div>

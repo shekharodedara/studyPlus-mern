@@ -20,7 +20,7 @@ function BookDetails() {
   const fetchBookDetails = async () => {
     setLoading(true);
     try {
-      const res = await getBookDetails(id);
+      const res = await getBookDetails(id, "GB");
       setBook(res || null);
     } catch (err) {
       console.error("Book fetch failed:", err);
