@@ -50,49 +50,45 @@ exports.showAllCategories = async (req, res) => {
 };
 exports.getCategoryPageDetails = async (req, res) => {
   try {
-    const { categoryId } = req.body;
-    const selectedCategory = await Category.findById(categoryId)
-      .populate({
-        path: "courses",
-        match: { status: "Published" },
-        populate: "ratingAndReviews",
-      })
-      .exec();
-    if (!selectedCategory) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Category not found" });
-    }
-    if (selectedCategory.courses.length === 0) {
-      return res.status(404).json({
-        success: false,
-        data: null,
-        message: "No courses found for the selected category.",
-      });
-    }
-    const categoriesExceptSelected = await Category.find({
-      _id: { $ne: categoryId },
-      courses: { $exists: true, $not: { $size: 0 } },
-    });
-    let differentCategory = await Category.findOne(
-      categoriesExceptSelected[getRandomInt(categoriesExceptSelected.length)]
-        ._id
-    )
-      .populate({
-        path: "courses",
-        match: { status: "Published" },
-      })
-      .exec();
+    let { categoryId } = req.body;
     const allCategories = await Category.find()
       .populate({
         path: "courses",
         match: { status: "Published" },
-        populate: {
-          path: "instructor",
-        },
+        populate: "ratingAndReviews instructor",
       })
       .exec();
-    const allCourses = allCategories.flatMap((category) => category.courses);
+    const categoriesWithCourses = allCategories.filter(
+      (category) => category.courses && category.courses.length > 0
+    );
+    if (categoryId === "home") {
+      const randomIndex = Math.floor(
+        Math.random() * categoriesWithCourses.length
+      );
+      categoryId = categoriesWithCourses[randomIndex]._id;
+    }
+    const selectedCategory = await Category.findById(categoryId).populate({
+      path: "courses",
+      match: { status: "Published" },
+      populate: "ratingAndReviews instructor",
+    });
+    if (!selectedCategory || selectedCategory.courses.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No published courses found for this category",
+      });
+    }
+    const categoriesExceptSelected = categoriesWithCourses.filter(
+      (cat) => cat._id.toString() !== categoryId.toString()
+    );
+    let differentCategory = null;
+    if (categoriesExceptSelected.length > 0) {
+      const randomIndex = Math.floor(
+        Math.random() * categoriesExceptSelected.length
+      );
+      differentCategory = categoriesExceptSelected[randomIndex];
+    }
+    const allCourses = categoriesWithCourses.flatMap((cat) => cat.courses);
     const mostSellingCourses = allCourses
       .sort((a, b) => b.sold - a.sold)
       .slice(0, 10);
@@ -105,6 +101,7 @@ exports.getCategoryPageDetails = async (req, res) => {
       },
     });
   } catch (error) {
+    console.error("Error in getCategoryPageDetails:", error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",

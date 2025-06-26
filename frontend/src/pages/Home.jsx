@@ -45,7 +45,7 @@ const Home = () => {
   const { user } = useSelector((state) => state.profile);
   const [backgroundImg, setBackgroundImg] = useState(null);
   const [CatalogPageData, setCatalogPageData] = useState(null);
-  const categoryID = "";
+  const categoryID = "home";
   const isLoggedIn = !!user?.accountType;
   const dispatch = useDispatch();
   useEffect(() => {

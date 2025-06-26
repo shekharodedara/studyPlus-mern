@@ -19,8 +19,13 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    // origin: 'http://localhost:5173',
-    origin: "*",
+    origin: (origin, cb) =>
+      [
+        "http://localhost:5173",
+        `http://${process.env.SYSTEM_IP}:5173`,
+      ].includes(origin) || !origin
+        ? cb(null, true)
+        : cb(new Error("CORS not allowed")),
     credentials: true,
   })
 );

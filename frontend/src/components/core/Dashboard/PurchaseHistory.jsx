@@ -7,6 +7,10 @@ const PurchaseHistory = () => {
   const [history, setHistory] = useState({ courses: [], ebooks: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const totalAmount = [...history.courses, ...history.ebooks].reduce(
+    (sum, item) => sum + (item.price || 0),
+    0
+  );
 
   const fetchHistory = async () => {
     try {
@@ -40,9 +44,14 @@ const PurchaseHistory = () => {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-6">
-      <h2 className="text-3xl font-boogaloo text-richblack-5 mb-6">
-        Purchase History
-      </h2>
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-3xl font-boogaloo text-richblack-5">
+          Purchase History
+        </h2>
+        <p className="text-richblack-100 bg-richblack-700 rounded-full text-lg px-2">
+          Total: €{totalAmount.toFixed(2)}
+        </p>
+      </div>
       {history.courses.length > 0 && (
         <div className="mb-10">
           <h3 className="text-2xl font-semibold text-richblack-200 mb-3">
