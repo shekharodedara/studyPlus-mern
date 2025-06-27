@@ -54,7 +54,10 @@ function BookDetailsCard({ book, user, token, navigate, dispatch }) {
       text2: "Please login to Purchase Course.",
       btn1Text: "Login",
       btn2Text: "Cancel",
-      btn1Handler: () => navigate("/login"),
+      btn1Handler: () =>
+        navigate("/login", {
+          state: { from: window.location.pathname },
+        }),
       btn2Handler: () => setConfirmationModal(null),
     });
   };

@@ -74,7 +74,7 @@ export function signUp(
   };
 }
 
-export function login(email, password, navigate) {
+export function login(email, password, navigate, from) {
   return async (dispatch) => {
     const toastId = toast.loading("Loading...");
     dispatch(setLoading(true));
@@ -97,7 +97,7 @@ export function login(email, password, navigate) {
         "user",
         JSON.stringify({ ...response.data.user, image: userImage })
       );
-      navigate("/dashboard/my-profile");
+      navigate(from);
     } catch (error) {
       console.log("LOGIN API ERROR.......", error);
       toast.error(error.response?.data?.message);

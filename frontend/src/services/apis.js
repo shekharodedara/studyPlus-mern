@@ -69,3 +69,9 @@ export const noteEndpoints = {
   ADD_NOTE_API: BASE_URL + "/notes/create",
   DELETE_NOTE_API: BASE_URL + "/notes/delete",
 };
+
+export const liveClassEndpoints = {
+  CREATE_LIVE_CLASS_API: BASE_URL + "/live-class/createLiveClass",
+  GET_INSTRUCTOR_LIVE_CLASSES_API: BASE_URL + "/live-class/instructor-classes",
+  DELETE_LIVE_CLASS_API: BASE_URL + "/live-class/deleteLiveClass",
+};

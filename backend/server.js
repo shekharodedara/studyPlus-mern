@@ -14,6 +14,7 @@ const profileRoutes = require("./routes/profile");
 const paymentRoutes = require("./routes/payments");
 const courseRoutes = require("./routes/course");
 const note = require("./routes/note");
+const liveClass = require("./routes/liveClass");
 // middleware
 app.use(express.json());
 app.use(cookieParser());
@@ -49,6 +50,7 @@ app.use("/api/v1/profile", profileRoutes);
 app.use("/api/v1/payment", paymentRoutes);
 app.use("/api/v1/course", courseRoutes);
 app.use("/api/v1/notes", note);
+app.use("/api/v1/live-class", liveClass);
 // Default Route
 app.get("/", (req, res) => {
   res.send(`<div>

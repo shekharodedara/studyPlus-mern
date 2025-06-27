@@ -45,6 +45,12 @@ const userSchema = new mongoose.Schema(
         ref: "Course",
       },
     ],
+    liveClasses: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "LiveClass",
+      },
+    ],
     ebooks: [
       {
         id: {

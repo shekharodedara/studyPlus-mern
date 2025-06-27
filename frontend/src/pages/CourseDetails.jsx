@@ -43,8 +43,13 @@ function CourseDetails() {
   }, [courseId]);
   const [avgReviewCount, setAvgReviewCount] = useState(0);
   useEffect(() => {
-    const count = GetAvgRating(response?.data?.courseDetails.ratingAndReviews);
-    setAvgReviewCount(count);
+    const reviews = response?.data?.courseDetails?.ratingAndReviews;
+    if (Array.isArray(reviews) && reviews.length > 0) {
+      const count = GetAvgRating(reviews);
+      setAvgReviewCount(count);
+    } else {
+      setAvgReviewCount(0);
+    }
   }, [response]);
   const [isActive, setIsActive] = useState(Array(0));
   const handleActive = (id) => {
@@ -110,7 +115,10 @@ function CourseDetails() {
       text2: "Please login to Purchase Course.",
       btn1Text: "Login",
       btn2Text: "Cancel",
-      btn1Handler: () => navigate("/login"),
+      btn1Handler: () =>
+        navigate("/login", {
+          state: { from: window.location.pathname },
+        }),
       btn2Handler: () => setConfirmationModal(null),
     });
   };

@@ -32,6 +32,8 @@ import Books from "./pages/Books";
 import BookDetails from "./pages/BookDetails";
 import PurchasedBooks from "./components/core/Dashboard/PurchasedBooks";
 import PurchaseHistory from "./components/core/Dashboard/PurchaseHistory";
+import AddLiveClass from "./components/core/Dashboard/AddLiveClass/AddLiveClass";
+import MyLiveClasses from "./components/core/Dashboard/MyLiveClasses";
 
 function App() {
   const { user } = useSelector((state) => state.profile);
@@ -91,9 +93,9 @@ function App() {
         <Route
           path="login"
           element={
-            <OpenRoute>
+            // <OpenRoute>
               <Login />
-            </OpenRoute>
+            // </OpenRoute>
           }
         />
         <Route
@@ -147,7 +149,9 @@ function App() {
             <>
               <Route path="dashboard/instructor" element={<Instructor />} />
               <Route path="dashboard/add-course" element={<AddCourse />} />
+              <Route path="dashboard/add-live-class" element={<AddLiveClass />} />
               <Route path="dashboard/my-courses" element={<MyCourses />} />
+              <Route path="dashboard/live-classes" element={<MyLiveClasses />} />
               <Route
                 path="dashboard/edit-course/:courseId"
                 element={<EditCourse />}
