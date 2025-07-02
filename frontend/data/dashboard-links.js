@@ -58,6 +58,13 @@ export const sidebarLinks = [
   },
   {
     id: 9,
+    name: "Live Classes",
+    path: "/dashboard/enrolled-liveclasses",
+    type: ACCOUNT_TYPE.STUDENT,
+    icon: "VscMortarBoard",
+  },
+  {
+    id: 10,
     name: "Purchase History",
     path: "/dashboard/purchase-history",
     type: ACCOUNT_TYPE.STUDENT,

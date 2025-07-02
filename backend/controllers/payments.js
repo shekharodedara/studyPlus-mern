@@ -8,84 +8,108 @@ require("dotenv").config();
 const User = require("../models/user");
 const Course = require("../models/course");
 const CourseProgress = require("../models/courseProgress");
-const { default: mongoose } = require("mongoose");
+const LiveClass = require("../models/liveClass");
 
 exports.capturePayment = async (req, res) => {
-  const { coursesId = [], books = [] } = req.body;
+  const { coursesId = [], books = [], liveClasses = [] } = req.body;
   const userId = req.user.id;
   const currency = "EUR";
   let totalAmount = 0;
-  if (coursesId.length > 0) {
-    for (const course_id of coursesId) {
-      try {
-        const course = await Course.findById(course_id);
-        if (!course) {
-          return res
-            .status(404)
-            .json({ success: false, message: "Course not found" });
-        }
-        const uid = new mongoose.Types.ObjectId(userId);
-        if (course.studentsEnrolled.includes(uid)) {
-          return res.status(400).json({
-            success: false,
-            message: "Student is already Enrolled in a course",
-          });
-        }
+  try {
+    const user = await User.findById(userId).select(
+      "courses ebooks liveClasses"
+    );
+    const validCourseIds = [];
+    const alreadyPurchasedCourses = [];
+    for (const courseId of coursesId) {
+      const course = await Course.findById(courseId);
+      if (!course)
+        return res
+          .status(404)
+          .json({ success: false, message: `Course not found: ${courseId}` });
+      const alreadyPurchased = user.courses.includes(courseId);
+      if (alreadyPurchased) {
+        alreadyPurchasedCourses.push(course.courseName || "Unnamed Course");
+      } else {
         totalAmount += course.price;
-      } catch (error) {
-        return res.status(500).json({ success: false, message: error.message });
+        validCourseIds.push(courseId);
       }
     }
-  }
-  if (books.length > 0) {
+    const validBooks = [];
+    const alreadyPurchasedBooks = [];
     for (const book of books) {
-      if (!book.id || typeof book.price !== "number") {
+      if (!book.id || typeof book.price !== "number")
         return res
           .status(400)
           .json({ success: false, message: "Invalid book data" });
+      const alreadyPurchased = user.ebooks.some((e) => e.id === book.id);
+      if (alreadyPurchased) {
+        alreadyPurchasedBooks.push(book.title || "Untitled Book");
+      } else {
+        totalAmount += book.price;
+        validBooks.push(book);
       }
-      totalAmount += book.price;
     }
-  }
-  if (totalAmount === 0) {
-    try {
-      if (coursesId.length > 0) {
-        await enrollStudents(coursesId, userId);
+    const validLiveClasses = [];
+    const alreadyPurchasedLiveClasses = [];
+    for (const lc of liveClasses) {
+      if (!lc.id || typeof lc.price !== "number")
+        return res
+          .status(400)
+          .json({ success: false, message: "Invalid liveClass data" });
+      const alreadyPurchased = user.liveClasses.includes(lc.id);
+      if (alreadyPurchased) {
+        alreadyPurchasedLiveClasses.push(lc.title || "Untitled Live Class");
+      } else {
+        totalAmount += lc.price;
+        validLiveClasses.push(lc);
       }
-      if (books.length > 0) {
-        for (const book of books) {
-          await addBookToUser(book, userId);
-        }
+    }
+    if (
+      validCourseIds.length === 0 &&
+      validBooks.length === 0 &&
+      validLiveClasses.length === 0
+    ) {
+      return res.status(409).json({
+        success: false,
+        message: "Item already exist in your account.",
+        duplicates: {
+          courses: alreadyPurchasedCourses,
+          books: alreadyPurchasedBooks,
+          liveClasses: alreadyPurchasedLiveClasses,
+        },
+      });
+    }
+    if (totalAmount === 0) {
+      if (validCourseIds.length > 0)
+        await enrollStudents(validCourseIds, userId);
+      if (validBooks.length > 0) {
+        for (const book of validBooks) await addBookToUser(book, userId);
+      }
+      if (validLiveClasses.length > 0) {
+        for (const lc of validLiveClasses) await addLiveClassToUser(lc, userId);
       }
       return res.status(200).json({
         success: true,
         message: "Free content added successfully",
-        free: true,
-      });
-    } catch (error) {
-      return res.status(500).json({
-        success: false,
-        message: "Failed to add free content",
-        error: error.message,
       });
     }
-  }
-  const options = {
-    amount: Math.round(totalAmount * 100),
-    currency,
-    receipt: `receipt_${Date.now()}`,
-  };
-  try {
+    const options = {
+      amount: Math.round(totalAmount * 100),
+      currency,
+      receipt: `receipt_${Date.now()}`,
+    };
     const paymentResponse = await instance.instance.orders.create(options);
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: paymentResponse,
     });
-  } catch (error) {
+  } catch (err) {
+    console.error("Error in capturePayment:", err);
     return res.status(500).json({
       success: false,
-      message: "Could not Initiate Order",
-      razorpayError: error?.error || error.message,
+      message: "Could not initiate order",
+      error: err.message,
     });
   }
 };
@@ -97,6 +121,7 @@ exports.verifyPayment = async (req, res) => {
     razorpay_signature,
     coursesId = [],
     books = [],
+    liveClasses = [],
   } = req.body;
   const userId = req.user.id;
   if (
@@ -126,12 +151,41 @@ exports.verifyPayment = async (req, res) => {
         await addBookToUser(book, userId);
       }
     }
+    if (liveClasses.length > 0) {
+      for (const lc of liveClasses) {
+        await addLiveClassToUser(lc, userId);
+      }
+    }
     return res
       .status(200)
       .json({ success: true, message: "Payment Verified and Access Granted" });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
+};
+
+const addLiveClassToUser = async (liveClass, userId) => {
+  if (!liveClass || !liveClass.id) throw new Error("Live class data missing");
+  const enrolledLiveClass = await LiveClass.findByIdAndUpdate(
+    liveClass.id,
+    { $addToSet: { studentsEnrolled: userId } },
+    { new: true }
+  );
+  if (!enrolledLiveClass) throw new Error("Live class not found");
+  const updatedUser = await User.findByIdAndUpdate(
+    userId,
+    {
+      $addToSet: {
+        liveClasses: liveClass.id,
+        liveClassPurchases: {
+          liveClassId: liveClass.id,
+          purchasedAt: new Date(),
+        },
+      },
+    },
+    { new: true }
+  );
+  return updatedUser;
 };
 
 const enrollStudents = async (courses, userId) => {
@@ -232,8 +286,11 @@ exports.getPurchaseHistory = async (req, res) => {
         path: "courses",
         select: "courseName thumbnail price createdAt",
       })
-      .select("ebooks courses");
-
+      .populate({
+        path: "liveClasses",
+        select: "title thumbnail price createdAt",
+      })
+      .select("ebooks courses liveClasses liveClassPurchases");
     if (!user) {
       return res
         .status(404)
@@ -254,11 +311,24 @@ exports.getPurchaseHistory = async (req, res) => {
       price: book.price,
       purchasedAt: book.purchasedAt,
     }));
+    const liveClassHistory = user.liveClasses.map((lc) => {
+      const purchase = user.liveClassPurchases.find(
+        (p) => p.liveClassId.toString() === lc._id.toString()
+      );
+      return {
+        id: lc._id,
+        title: lc.title,
+        thumbnail: lc.thumbnail,
+        price: lc.price,
+        purchasedAt: purchase?.purchasedAt || null,
+      };
+    });
     return res.status(200).json({
       success: true,
       purchases: {
         courses: courseHistory,
         ebooks: ebookHistory,
+        liveClasses: liveClassHistory,
       },
     });
   } catch (err) {

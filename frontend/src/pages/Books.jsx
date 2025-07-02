@@ -97,7 +97,7 @@ function Books() {
           <Loading />
         </div>
       ) : error ? (
-        <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center text-red-500 text-lg">
+        <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center text-white text-3xl">
           {error}
         </div>
       ) : books.length === 0 ? (

@@ -27,7 +27,7 @@ function loadScript(src) {
 
 export async function buyItem(
   token,
-  { coursesId = [], books = [] },
+  { coursesId = [], books = [], liveClasses = [] },
   userDetails,
   navigate,
   dispatch
@@ -38,8 +38,7 @@ export async function buyItem(
       "https://checkout.razorpay.com/v1/checkout.js"
     );
     if (!sdkRes) return toast.error("Razorpay SDK load failed");
-
-    const payload = { coursesId, books };
+    const payload = { coursesId, books, liveClasses };
     const orderRes = await apiConnector("POST", COURSE_PAYMENT_API, payload, {
       Authorization: `Bearer ${token}`,
     });
@@ -66,18 +65,21 @@ export async function buyItem(
       handler(response) {
         // sendPaymentSuccessEmail(response, amount, token);
         verifyPayment(
-          { ...response, coursesId, books },
+          { ...response, coursesId, books, liveClasses },
           token,
           navigate,
           dispatch
         );
       },
     };
-
     new window.Razorpay(options).open();
   } catch (err) {
     console.error(err);
-    toast.error(err.message || err.response?.data?.message);
+    toast.error(
+      (err?.response?.status === 409 || err?.response?.status === 400)
+        ? err.response.data.message
+        : err.response?.data?.message || err.message || "Something went wrong"
+    );
   } finally {
     toast.dismiss(toastId);
   }

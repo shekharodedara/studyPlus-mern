@@ -96,6 +96,18 @@ const userSchema = new mongoose.Schema(
         purchasedAt: { type: Date, default: Date.now },
       },
     ],
+    liveClassPurchases: [
+      {
+        liveClassId: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "LiveClass",
+        },
+        purchasedAt: {
+          type: Date,
+          default: Date.now,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );

@@ -162,7 +162,12 @@ const VideoDetails = () => {
           aspectRatio="16:9"
           playsInline
           autoPlay
-          onEnded={() => setVideoEnded(true)}
+          onEnded={() => {
+            setVideoEnded(true);
+            if (!completedLectures.includes(subSectionId)) {
+              handleLectureCompletion();
+            }
+          }}
           src={videoData?.videoUrl}
         >
           <BigPlayButton position="center" />
@@ -174,14 +179,14 @@ const VideoDetails = () => {
               }}
               className="full absolute inset-0 z-[100] grid h-full place-content-center font-inter"
             >
-              {!completedLectures.includes(subSectionId) && (
+              {/* {!completedLectures.includes(subSectionId) && (
                 <IconBtn
                   disabled={loading}
                   onclick={() => handleLectureCompletion()}
                   text={!loading ? "Mark As Completed" : "Loading..."}
                   customClasses="text-xl max-w-max px-4 mx-auto"
                 />
-              )}
+              )} */}
               <IconBtn
                 disabled={loading}
                 onclick={() => {

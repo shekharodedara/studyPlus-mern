@@ -74,4 +74,8 @@ export const liveClassEndpoints = {
   CREATE_LIVE_CLASS_API: BASE_URL + "/live-class/createLiveClass",
   GET_INSTRUCTOR_LIVE_CLASSES_API: BASE_URL + "/live-class/instructor-classes",
   DELETE_LIVE_CLASS_API: BASE_URL + "/live-class/deleteLiveClass",
+  GET_LIVE_CLASSES_API: BASE_URL + "/live-class/getLiveClasses",
+  GET_LIVE_CLASS_DETAILS_API: BASE_URL + "/live-class/getLiveClassDetails",
+  GET_PURCHASED_LIVE_CLASSES_API:
+    BASE_URL + "/live-class/purchased-liveclasses",
 };

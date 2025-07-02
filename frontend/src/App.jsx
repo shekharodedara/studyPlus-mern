@@ -34,6 +34,9 @@ import PurchasedBooks from "./components/core/Dashboard/PurchasedBooks";
 import PurchaseHistory from "./components/core/Dashboard/PurchaseHistory";
 import AddLiveClass from "./components/core/Dashboard/AddLiveClass/AddLiveClass";
 import MyLiveClasses from "./components/core/Dashboard/MyLiveClasses";
+import LiveClasses from "./pages/LiveClasses";
+import LiveClassDetails from "./pages/LiveClassDetails";
+import PurchasedLiveClasses from "./components/core/Dashboard/PurchasedLiveClasses";
 
 function App() {
   const { user } = useSelector((state) => state.profile);
@@ -82,11 +85,13 @@ function App() {
         <Route path="courses/:courseId" element={<CourseDetails />} />
         <Route path="/books" element={<Books />} />
         <Route path="/books/:id" element={<BookDetails />} />
+        <Route path="/live-classes" element={<LiveClasses />} />
+        <Route path="/live-class/:id" element={<LiveClassDetails />} />
         <Route
           path="signup"
           element={
             // <OpenRoute>
-              <Signup />
+            <Signup />
             // </OpenRoute>
           }
         />
@@ -94,7 +99,7 @@ function App() {
           path="login"
           element={
             // <OpenRoute>
-              <Login />
+            <Login />
             // </OpenRoute>
           }
         />
@@ -140,6 +145,10 @@ function App() {
                 element={<EnrolledCourses />}
               />
               <Route
+                path="dashboard/enrolled-liveclasses"
+                element={<PurchasedLiveClasses />}
+              />
+              <Route
                 path="dashboard/purchase-history"
                 element={<PurchaseHistory />}
               />
@@ -149,9 +158,15 @@ function App() {
             <>
               <Route path="dashboard/instructor" element={<Instructor />} />
               <Route path="dashboard/add-course" element={<AddCourse />} />
-              <Route path="dashboard/add-live-class" element={<AddLiveClass />} />
+              <Route
+                path="dashboard/add-live-class"
+                element={<AddLiveClass />}
+              />
               <Route path="dashboard/my-courses" element={<MyCourses />} />
-              <Route path="dashboard/live-classes" element={<MyLiveClasses />} />
+              <Route
+                path="dashboard/live-classes"
+                element={<MyLiveClasses />}
+              />
               <Route
                 path="dashboard/edit-course/:courseId"
                 element={<EditCourse />}

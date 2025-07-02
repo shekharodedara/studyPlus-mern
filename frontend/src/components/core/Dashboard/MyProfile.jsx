@@ -45,14 +45,14 @@ export default function MyProfile() {
       <div className="my-10 flex flex-col gap-y-10 rounded-2xl border-[1px] border-richblack-700 bg-richblack-800 p-8 px-7 sm:px-12">
         <div className="flex w-full items-center justify-between">
           <p className="text-lg font-semibold text-richblack-5">About</p>
-          <IconBtn
+          {/* <IconBtn
             text="Edit"
             onclick={() => {
               navigate("/dashboard/settings");
             }}
           >
             <RiEditBoxLine />
-          </IconBtn>
+          </IconBtn> */}
         </div>
         <p
           className={`${
@@ -69,14 +69,14 @@ export default function MyProfile() {
           <p className="text-lg font-semibold text-richblack-5">
             Personal Details
           </p>
-          <IconBtn
+          {/* <IconBtn
             text="Edit"
             onclick={() => {
               navigate("/dashboard/settings");
             }}
           >
             <RiEditBoxLine />
-          </IconBtn>
+          </IconBtn> */}
         </div>
         <div className="flex max-w-[500px] justify-between ">
           <div className="flex flex-col gap-y-5">

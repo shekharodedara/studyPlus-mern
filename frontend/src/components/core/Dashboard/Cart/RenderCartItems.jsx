@@ -69,7 +69,7 @@ export default function RenderCartItems() {
             </div>
             <div className="flex flex-col items-end space-y-2">
               <button
-                onClick={() => dispatch(removeFromCart(item._id))}
+                onClick={() => dispatch(removeFromCart(item.cartItemId || item._id || item.id))}
                 className="flex items-center gap-x-1 rounded-md border border-richblack-600 bg-richblack-700 py-3 px-[12px] text-pink-200"
               >
                 <RiDeleteBin6Line />

@@ -5,23 +5,51 @@ import { MdCheckCircle } from "react-icons/md";
 import IconBtn from "../../../../common/IconBtn";
 import { resetLiveClassState } from "../../../../../slices/liveClassSlice";
 import { publishLiveClassAPI } from "../../../../../services/operations/liveClassesApi";
+import { useNavigate } from "react-router-dom";
 
 export default function PublishLiveClass() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { liveClass } = useSelector((state) => state.liveClass);
   const { token } = useSelector((state) => state.auth);
   const [isPublishing, setIsPublishing] = useState(false);
 
   const handlePublish = async () => {
     setIsPublishing(true);
-    const result = await publishLiveClassAPI(liveClass, token);
-    setIsPublishing(false);
-    if (result) {
-      toast.success("Live class published successfully!");
-      dispatch(resetLiveClassState());
-    } else {
-      toast.error("Failed to publish live class");
+    try {
+      let finalPayload = { ...liveClass };
+      if (
+        liveClass.thumbnail &&
+        typeof liveClass.thumbnail === "string" &&
+        liveClass.thumbnail.startsWith("data:image")
+      ) {
+        const file = base64ToFile(liveClass.thumbnail, "thumbnail.jpg");
+        finalPayload.thumbnail = file;
+      }
+      const result = await publishLiveClassAPI(finalPayload, token);
+      setIsPublishing(false);
+      if (result) {
+        dispatch(resetLiveClassState());
+        navigate("/dashboard/live-classes");
+      } else {
+        toast.error("Failed to publish live class");
+      }
+    } catch (error) {
+      setIsPublishing(false);
+      toast.error("Something went wrong while publishing");
+      console.error(error);
     }
+  };
+  const base64ToFile = (base64String, filename) => {
+    const arr = base64String.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], filename, { type: mime });
   };
 
   return (

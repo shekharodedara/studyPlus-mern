@@ -70,14 +70,14 @@ const Navbar = () => {
                 >
                   <p>{link.title}</p>
                   <MdKeyboardArrowDown />
-                  <div className="invisible absolute left-[50%] top-[50%] z-[1000] translate-x-[-50%] translate-y-[3em] opacity-0 transition-all duration-150 group-hover:visible group-hover:translate-y-[1.65em] group-hover:opacity-100">
-                    <div className="absolute left-[50%] top-0 z-[100] h-6 w-6 translate-x-[80%] translate-y-[-40%] rotate-45 select-none rounded bg-richblack-5" />
+                  <div className="invisible absolute left-1/2 top-full z-[1000] translate-x-[-50%] translate-y-2 opacity-0 transition-all duration-200 group-hover:visible group-hover:translate-y-1 group-hover:opacity-100">
+                    <div className="absolute left-[50%] top-0 z-[100] h-6 w-6 translate-x-[80%] translate-y-[-50%] rotate-45 select-none rounded bg-richblack-5" />
                     <div
                       className="flex h-[280px] w-[200px] flex-col overflow-y-auto rounded-lg bg-richblack-5 p-4 text-richblack-900 lg:w-[300px] custom-scroll"
                       onWheel={(e) => e.stopPropagation()}
                     >
                       {loading ? (
-                        <p className="text-center ">Loading...</p>
+                        <p className="text-center">Loading...</p>
                       ) : subLinks.length ? (
                         subLinks.map((subLink, i) => (
                           <Link
@@ -85,7 +85,7 @@ const Navbar = () => {
                               .split(" ")
                               .join("-")
                               .toLowerCase()}`}
-                            className="rounded-lg bg-transparent py-4 pl-4 hover:bg-richblack-50"
+                            className="rounded-md bg-transparent py-2 pl-3 hover:bg-richblack-50"
                             key={i}
                           >
                             <p>{subLink.name}</p>

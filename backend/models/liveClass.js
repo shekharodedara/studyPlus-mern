@@ -32,6 +32,15 @@ const liveClassSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    price: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    thumbnail: {
+      type: String,
+      required: true,
+    },
     studentsEnrolled: [
       {
         type: mongoose.Schema.Types.ObjectId,

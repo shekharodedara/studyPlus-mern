@@ -43,7 +43,7 @@ exports.sendOTP = async (req, res) => {
     res.status(200).json({
       success: false,
       message: "Error while generating Otp",
-      error: error.mesage,
+      error: error.message,
     });
   }
 };
@@ -109,8 +109,7 @@ exports.signup = async (req, res) => {
       about: null,
       contactNumber: null,
     });
-    let approved = "";
-    approved === "Instructor" ? (approved = false) : (approved = true);
+    const approved = accountType === "Instructor" ? false : true;
     const userData = await User.create({
       firstName,
       lastName,
@@ -243,7 +242,7 @@ exports.changePassword = async (req, res) => {
     }
     res.status(200).json({
       success: true,
-      mesage: "Password changed successfully",
+      message: "Password changed successfully",
     });
   } catch (error) {
     console.log("Error while changing passowrd");

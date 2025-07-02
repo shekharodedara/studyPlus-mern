@@ -4,18 +4,23 @@ import { getPurchaseHistory } from "../../../services/operations/profileAPI";
 
 const PurchaseHistory = () => {
   const { token } = useSelector((state) => state.auth);
-  const [history, setHistory] = useState({ courses: [], ebooks: [] });
+  const [history, setHistory] = useState({
+    courses: [],
+    ebooks: [],
+    liveClasses: [],
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const totalAmount = [...history.courses, ...history.ebooks].reduce(
-    (sum, item) => sum + (item.price || 0),
-    0
-  );
+  const totalAmount = [
+    ...history.courses,
+    ...history.ebooks,
+    ...history.liveClasses,
+  ].reduce((sum, item) => sum + (item.price || 0), 0);
 
   const fetchHistory = async () => {
     try {
       const res = await getPurchaseHistory(token);
-      setHistory(res || { courses: [], ebooks: [] });
+      setHistory(res || { courses: [], ebooks: [], liveClasses: [] });
     } catch (err) {
       setError("Failed to fetch purchase history");
     } finally {
@@ -126,11 +131,50 @@ const PurchaseHistory = () => {
           </div>
         </div>
       )}
-      {history.courses.length === 0 && history.ebooks.length === 0 && (
-        <p className="text-center text-richblack-200 mt-10 text-lg">
-          You haven't purchased any courses or books yet.
-        </p>
+      {history.liveClasses.length > 0 && (
+        <div className="mt-10">
+          <h3 className="text-2xl font-semibold text-richblack-200 mb-3">
+            Live Classes
+          </h3>
+          <div className="overflow-x-auto">
+            <table className="min-w-full border-collapse">
+              <thead>
+                <tr className="bg-richblack-700">
+                  <th className={tableHeaderClass}></th>
+                  <th className={tableHeaderClass}>Title</th>
+                  <th className={tableHeaderClass}>Price</th>
+                  <th className={tableHeaderClass}>Purchased On</th>
+                </tr>
+              </thead>
+              <tbody>
+                {history.liveClasses.map((lc) => (
+                  <tr key={lc.id}>
+                    <td className={tableDataClass}>
+                      <img
+                        src={lc.thumbnail}
+                        alt={lc.title}
+                        className="w-16 h-16 object-cover rounded"
+                      />
+                    </td>
+                    <td className={tableDataClass}>{lc.title}</td>
+                    <td className={tableDataClass}>€{lc.price}</td>
+                    <td className={tableDataClass}>
+                      {formatDate(lc.purchasedAt)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       )}
+      {history.courses.length === 0 &&
+        history.ebooks.length === 0 &&
+        history.liveClasses.length === 0 && (
+          <p className="text-center text-richblack-200 mt-10 text-lg">
+            You haven't purchased any courses or books or live classes yet.
+          </p>
+        )}
     </div>
   );
 };
