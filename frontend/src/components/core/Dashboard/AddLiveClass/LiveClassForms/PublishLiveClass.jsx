@@ -75,6 +75,10 @@ export default function PublishLiveClass() {
         </li>
         <li>
           <MdCheckCircle className="inline-block text-lg text-yellow-50 mr-2" />
+          <strong>Participants Limit:</strong> {liveClass?.participantLimit}
+        </li>
+        <li>
+          <MdCheckCircle className="inline-block text-lg text-yellow-50 mr-2" />
           <strong>Platform:</strong> {liveClass?.platform}
         </li>
         <li>

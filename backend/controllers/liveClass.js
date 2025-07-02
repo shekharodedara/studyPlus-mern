@@ -13,6 +13,7 @@ exports.createLiveClass = async (req, res) => {
       accessLink,
       status,
       price,
+      participantLimit,
     } = req.body;
     const instructorId = req.user.id;
     const thumbnail = req.files?.thumbnail;
@@ -23,7 +24,8 @@ exports.createLiveClass = async (req, res) => {
       !duration ||
       !platform ||
       !accessLink ||
-      !thumbnail
+      !thumbnail ||
+      !participantLimit
     ) {
       return res.status(400).json({
         success: false,
@@ -48,6 +50,7 @@ exports.createLiveClass = async (req, res) => {
       instructor: instructorId,
       status,
       thumbnail: thumbnailDetails.secure_url,
+      participantLimit,
     });
     await User.findByIdAndUpdate(
       instructorId,
@@ -100,6 +103,20 @@ exports.deleteLiveClass = async (req, res) => {
     await User.findByIdAndUpdate(liveClass.instructor, {
       $pull: { liveClasses: liveClassId },
     });
+    await User.updateMany(
+      {
+        $or: [
+          { liveClasses: liveClassId },
+          { "liveClassPurchases.liveClassId": liveClassId },
+        ],
+      },
+      {
+        $pull: {
+          liveClasses: liveClassId,
+          liveClassPurchases: { liveClassId: liveClassId },
+        },
+      }
+    );
     await LiveClass.findByIdAndDelete(liveClassId);
     return res.status(200).json({
       success: true,
@@ -186,7 +203,9 @@ exports.getPurchasedLiveClasses = async (req, res) => {
       })
       .select("liveClasses");
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     }
     return res.status(200).json({
       success: true,

@@ -145,7 +145,7 @@ function App() {
                 element={<EnrolledCourses />}
               />
               <Route
-                path="dashboard/enrolled-liveclasses"
+                path="dashboard/enrolled-liveClasses"
                 element={<PurchasedLiveClasses />}
               />
               <Route

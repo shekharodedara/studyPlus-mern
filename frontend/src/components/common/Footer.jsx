@@ -186,7 +186,7 @@ const Footer = () => {
                           key={index}
                           className="text-[14px] cursor-pointer hover:text-richblack-50 transition-all duration-200"
                         >
-                          <Link to={link.link}>{link.title}</Link>
+                          <Link to={`/catalog${link.link}`}>{link.title}</Link>
                         </div>
                       );
                     })}
@@ -219,7 +219,7 @@ const Footer = () => {
             })}
           </div>
           <div className="text-center flex flex-col sm:flex-row ">
-            <div className="flex ">
+            {/* <div className="flex ">
               <span> Made with ❤️</span>
               <Link
                 to="https://github.com/shekharodedara/studyPlus-mern"
@@ -228,10 +228,10 @@ const Footer = () => {
               >
                 Study +Plus
               </Link>
-            </div>
+            </div> */}
             <span> © 2025 StudyPlus</span>
           </div>
-          <div className="flex items-center">
+          {/* <div className="flex items-center">
             <a
               href="https://www.linkedin.com/in/"
               className="text-white p-3 hover:bg-richblack-700 rounded-full duration-300"
@@ -248,7 +248,7 @@ const Footer = () => {
             >
               <ImGithub size={17} />
             </a>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

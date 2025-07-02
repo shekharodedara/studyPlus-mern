@@ -7,7 +7,15 @@ import { buyItem } from "../../../services/operations/studentFeaturesAPI";
 
 function LiveClassDetailsCard({ liveClass, token, user, navigate, dispatch }) {
   const [confirmationModal, setConfirmationModal] = useState(null);
-  const { title, price, thumbnail, duration, _id } = liveClass;
+  const {
+    title,
+    price,
+    thumbnail,
+    duration,
+    _id,
+    studentsEnrolled,
+    participantLimit,
+  } = liveClass;
 
   const handleAddToCart = () => {
     if (!token) {
@@ -73,12 +81,20 @@ function LiveClassDetailsCard({ liveClass, token, user, navigate, dispatch }) {
           {price === 0 ? "Free" : `€${price}`}
         </p>
         <div className="flex flex-col gap-3 mt-4">
-          <button className="yellowButton w-full" onClick={handleBuyNow}>
-            {price === 0 ? "Join for Free" : "Buy Now"}
-          </button>
-          <button className="blackButton w-full" onClick={handleAddToCart}>
-            Add to Cart
-          </button>
+          {studentsEnrolled.length === participantLimit ? (
+            <div className="w-full py-3 text-center text-yellow-300 bg-red-100 rounded-md font-semibold">
+              Participant limit reached
+            </div>
+          ) : (
+            <>
+              <button className="yellowButton w-full" onClick={handleBuyNow}>
+                {price === 0 ? "Join for Free" : "Buy Now"}
+              </button>
+              <button className="blackButton w-full" onClick={handleAddToCart}>
+                Add to Cart
+              </button>
+            </>
+          )}
         </div>
       </div>
       {confirmationModal && <ConfirmationModal modalData={confirmationModal} />}

@@ -8,7 +8,7 @@ import { resetCart } from "../../slices/cartSlice";
 const {
   COURSE_PAYMENT_API,
   COURSE_VERIFY_API,
-  SEND_PAYMENT_SUCCESS_EMAIL_API,
+  // SEND_PAYMENT_SUCCESS_EMAIL_API,
 } = studentEndpoints;
 
 function loadScript(src) {
@@ -44,8 +44,16 @@ export async function buyItem(
     });
     if (!orderRes.data.success) throw new Error(orderRes.data.message);
     if (orderRes.data.free) {
-      toast.success("Added free items to your account!");
-      navigate("/dashboard/e-books");
+      toast.success(
+        orderRes.data.message || "Free items added to your account!"
+      );
+      if (orderRes.data.items.courses.length > 0) {
+        navigate("/dashboard/enrolled-courses");
+      } else if (orderRes.data.items.liveClasses.length > 0) {
+        navigate("/dashboard/enrolled-liveClasses");
+      } else if (orderRes.data.items.ebooks.length > 0) {
+        navigate("/dashboard/e-books");
+      }
       toast.dismiss(toastId);
       return;
     }
@@ -76,31 +84,12 @@ export async function buyItem(
   } catch (err) {
     console.error(err);
     toast.error(
-      (err?.response?.status === 409 || err?.response?.status === 400)
+      err?.response?.status === 409 || err?.response?.status === 400
         ? err.response.data.message
         : err.response?.data?.message || err.message || "Something went wrong"
     );
   } finally {
     toast.dismiss(toastId);
-  }
-}
-
-async function sendPaymentSuccessEmail(response, amount, token) {
-  try {
-    await apiConnector(
-      "POST",
-      SEND_PAYMENT_SUCCESS_EMAIL_API,
-      {
-        orderId: response.razorpay_order_id,
-        paymentId: response.razorpay_payment_id,
-        amount,
-      },
-      {
-        Authorization: `Bearer ${token}`,
-      }
-    );
-  } catch (error) {
-    console.log("PAYMENT SUCCESS EMAIL ERROR....", error);
   }
 }
 
@@ -117,7 +106,9 @@ async function verifyPayment(bodyData, token, navigate, dispatch) {
     toast.success("Payment Successful!");
     if (bodyData.coursesId.length) {
       navigate("/dashboard/enrolled-courses");
-    } else {
+    } else if (bodyData.liveClasses.length) {
+      navigate("/dashboard/enrolled-liveClasses");
+    } else if (bodyData.ebooks.length) {
       navigate("/dashboard/e-books");
     }
     dispatch(resetCart());
@@ -128,3 +119,22 @@ async function verifyPayment(bodyData, token, navigate, dispatch) {
   toast.dismiss(toastId);
   dispatch(setPaymentLoading(false));
 }
+
+// async function sendPaymentSuccessEmail(response, amount, token) {
+//   try {
+//     await apiConnector(
+//       "POST",
+//       SEND_PAYMENT_SUCCESS_EMAIL_API,
+//       {
+//         orderId: response.razorpay_order_id,
+//         paymentId: response.razorpay_payment_id,
+//         amount,
+//       },
+//       {
+//         Authorization: `Bearer ${token}`,
+//       }
+//     );
+//   } catch (error) {
+//     console.log("PAYMENT SUCCESS EMAIL ERROR....", error);
+//   }
+// }

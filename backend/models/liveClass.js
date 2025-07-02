@@ -41,6 +41,11 @@ const liveClassSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    participantLimit: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
     studentsEnrolled: [
       {
         type: mongoose.Schema.Types.ObjectId,

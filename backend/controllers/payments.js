@@ -81,17 +81,32 @@ exports.capturePayment = async (req, res) => {
       });
     }
     if (totalAmount === 0) {
-      if (validCourseIds.length > 0)
+      const addedItems = {
+        courses: [],
+        ebooks: [],
+        liveClasses: [],
+      };
+      if (validCourseIds.length > 0) {
         await enrollStudents(validCourseIds, userId);
+        addedItems.courses = validCourseIds;
+      }
       if (validBooks.length > 0) {
-        for (const book of validBooks) await addBookToUser(book, userId);
+        for (const book of validBooks) {
+          await addBookToUser(book, userId);
+          addedItems.ebooks.push(book.id);
+        }
       }
       if (validLiveClasses.length > 0) {
-        for (const lc of validLiveClasses) await addLiveClassToUser(lc, userId);
+        for (const lc of validLiveClasses) {
+          await addLiveClassToUser(lc, userId);
+          addedItems.liveClasses.push(lc.id);
+        }
       }
       return res.status(200).json({
         success: true,
-        message: "Free content added successfully",
+        free: true,
+        message: "Free item(s) added successfully",
+        items: addedItems,
       });
     }
     const options = {
@@ -166,6 +181,17 @@ exports.verifyPayment = async (req, res) => {
 
 const addLiveClassToUser = async (liveClass, userId) => {
   if (!liveClass || !liveClass.id) throw new Error("Live class data missing");
+  const existingLiveClass = await LiveClass.findById(liveClass.id).select(
+    "studentsEnrolled participantLimit"
+  );
+  if (!existingLiveClass) throw new Error("Live class not found");
+  if (
+    existingLiveClass.participantLimit &&
+    existingLiveClass.studentsEnrolled.length >=
+      existingLiveClass.participantLimit
+  ) {
+    throw new Error("Participant limit reached");
+  }
   const enrolledLiveClass = await LiveClass.findByIdAndUpdate(
     liveClass.id,
     { $addToSet: { studentsEnrolled: userId } },

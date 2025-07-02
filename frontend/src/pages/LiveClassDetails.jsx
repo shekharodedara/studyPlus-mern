@@ -44,6 +44,8 @@ function LiveClassDetails() {
     price,
     platform,
     accessLink,
+    studentsEnrolled,
+    participantLimit,
   } = liveClass;
 
   return (
@@ -75,6 +77,13 @@ function LiveClassDetails() {
                     🖥️ Platform:
                   </span>{" "}
                   {platform}
+                </p>
+                <p>
+                  <span className="font-semibold text-richblack-5">
+                    👥 Enrolled:
+                  </span>{" "}
+                  {studentsEnrolled?.length || 0} /{" "}
+                  {participantLimit || "No Limit"}
                 </p>
               </div>
             </div>
