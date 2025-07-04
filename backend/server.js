@@ -23,11 +23,7 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: (origin, cb) =>
-      [
-        `http://${process.env.SYSTEM_IP}:5173`,
-        `https://${process.env.SYSTEM_IP}:5173`,
-        process.env.OPTIONAL_NGROK_URL,
-      ].includes(origin) || !origin
+      [process.env.FRONTEND_URL].includes(origin) || !origin
         ? cb(null, true)
         : cb(new Error("CORS not allowed")),
     credentials: true,
