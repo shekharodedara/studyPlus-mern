@@ -24,10 +24,9 @@ app.use(
   cors({
     origin: (origin, cb) =>
       [
-        "http://filly-boss-ferret.ngrok-free.app",
-        "https://filly-boss-ferret.ngrok-free.app",
         `http://${process.env.SYSTEM_IP}:5173`,
         `https://${process.env.SYSTEM_IP}:5173`,
+        process.env.OPTIONAL_NGROK_URL,
       ].includes(origin) || !origin
         ? cb(null, true)
         : cb(new Error("CORS not allowed")),
