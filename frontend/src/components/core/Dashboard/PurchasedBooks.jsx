@@ -58,9 +58,9 @@ export default function PurchasedBooks() {
             <div className="relative bg-richblack-900 rounded-lg shadow-lg max-w-4xl w-full p-4">
               <button
                 onClick={() => setSelectedBookId(null)}
-                className="absolute top-2 right-4 text-white text-2xl hover:text-yellow-400"
+                className="absolute top-2 right-2 w-6 h-6 flex items-center justify-center rounded-full bg-white text-black text-xl shadow-lg z-50 hover:bg-richblack-300 hover:text-white transition"
               >
-                &times;
+                ✕
               </button>
               <iframe
                 src={`https://books.google.co.in/books?id=${selectedBookId}&printsec=frontcover&output=embed`}

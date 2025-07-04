@@ -19,6 +19,8 @@ export default function LiveClassesTable({
 }) {
   const { token } = useSelector((state) => state.auth);
   const [confirmationModal, setConfirmationModal] = useState(null);
+  const BROADCASTER_ROOM_CODE = import.meta.env
+    .VITE_APP_HMS_BROADCASTER_ROOM_CODE;
   const handleDelete = async (liveClassId) => {
     const toastId = toast.loading("Deleting...");
     setLoading(true);
@@ -73,6 +75,16 @@ export default function LiveClassesTable({
                 <button
                   title="Launch Live Class"
                   disabled={!canLaunch}
+                  onClick={() => {
+                    if (canLaunch) {
+                      window.open(
+                        `/dashboard/room/${
+                          liveClass.roomCode || BROADCASTER_ROOM_CODE
+                        }`,
+                        "_blank"
+                      );
+                    }
+                  }}
                   className={`transition ${
                     canLaunch
                       ? "hover:text-[#00ff99] text-white"

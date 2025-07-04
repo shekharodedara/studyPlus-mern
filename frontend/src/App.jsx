@@ -37,6 +37,7 @@ import MyLiveClasses from "./components/core/Dashboard/MyLiveClasses";
 import LiveClasses from "./pages/LiveClasses";
 import LiveClassDetails from "./pages/LiveClassDetails";
 import PurchasedLiveClasses from "./components/core/Dashboard/PurchasedLiveClasses";
+import LiveClassRoom from "./components/core/Dashboard/LiveClassRoom";
 
 function App() {
   const { user } = useSelector((state) => state.profile);
@@ -136,6 +137,7 @@ function App() {
         >
           <Route path="dashboard/my-profile" element={<MyProfile />} />
           <Route path="dashboard/Settings" element={<Settings />} />
+          <Route path="dashboard/room/:roomCode" element={<LiveClassRoom />} />
           {user?.accountType === ACCOUNT_TYPE.STUDENT && (
             <>
               <Route path="dashboard/cart" element={<Cart />} />

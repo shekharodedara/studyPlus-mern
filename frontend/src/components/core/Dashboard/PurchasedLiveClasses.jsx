@@ -6,6 +6,8 @@ export default function PurchasedLiveClasses() {
   const { token } = useSelector((state) => state.auth);
   const [liveClasses, setLiveClasses] = useState(null);
   const [error, setError] = useState(null);
+  const VIEWER_REALTIME_ROOM_CODE = import.meta.env
+    .VITE_APP_HMS_VIEWER_REALTIME_ROOM_CODE;
 
   const fetchLiveClasses = async () => {
     try {
@@ -74,6 +76,14 @@ export default function PurchasedLiveClasses() {
               </p>
               <button
                 disabled={!hasStarted}
+                onClick={() =>
+                  window.open(
+                    `/dashboard/room/${
+                      liveClass.roomCode || VIEWER_REALTIME_ROOM_CODE
+                    }`,
+                    "_blank"
+                  )
+                }
                 className={`mt-4 px-4 py-2 rounded text-white font-semibold transition ${
                   hasStarted
                     ? "bg-yellow-400 hover:bg-yellow-500"

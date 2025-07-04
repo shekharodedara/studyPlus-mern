@@ -1,4 +1,6 @@
 const express = require("express");
+const https = require("https");
+const selfsigned = require("selfsigned");
 const app = express();
 // packages
 const fileUpload = require("express-fileupload");
@@ -22,8 +24,10 @@ app.use(
   cors({
     origin: (origin, cb) =>
       [
-        "http://localhost:5173",
+        "http://filly-boss-ferret.ngrok-free.app",
+        "https://filly-boss-ferret.ngrok-free.app",
         `http://${process.env.SYSTEM_IP}:5173`,
+        `https://${process.env.SYSTEM_IP}:5173`,
       ].includes(origin) || !origin
         ? cb(null, true)
         : cb(new Error("CORS not allowed")),
@@ -36,11 +40,6 @@ app.use(
     tempFileDir: "/tmp",
   })
 );
-
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server Started on PORT ${PORT}`);
-});
 // connections
 connectDB();
 cloudinaryConnect();
@@ -58,3 +57,12 @@ app.get("/", (req, res) => {
     <p>Everything is OK</p>
     </div>`);
 });
+const PORT = process.env.PORT || 5000;
+const pems = selfsigned.generate([{ name: "commonName", value: "localhost" }], {
+  days: 365,
+});
+https
+  .createServer({ key: pems.private, cert: pems.cert }, app)
+  .listen(PORT, () => {
+    console.log(`Server Started on HTTPS PORT ${PORT}`);
+  });
