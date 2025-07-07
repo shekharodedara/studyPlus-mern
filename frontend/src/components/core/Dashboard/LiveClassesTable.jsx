@@ -1,15 +1,15 @@
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { FaVideo } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 // import { FiEdit2 } from "react-icons/fi";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import { formatDate } from "../../../services/formatDate";
 import ConfirmationModal from "../../common/ConfirmationModal";
 import {
   deleteLiveClassAPI,
   getInstructorLiveClasses,
 } from "../../../services/operations/liveClassesApi";
-import { formatDate } from "../../../services/formatDate";
-import { FaVideo } from "react-icons/fa";
 
 export default function LiveClassesTable({
   classes,
@@ -19,8 +19,9 @@ export default function LiveClassesTable({
 }) {
   const { token } = useSelector((state) => state.auth);
   const [confirmationModal, setConfirmationModal] = useState(null);
-  const BROADCASTER_ROOM_CODE = import.meta.env
-    .VITE_APP_HMS_BROADCASTER_ROOM_CODE;
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [intervals, setIntervals] = useState([]);
+
   const handleDelete = async (liveClassId) => {
     const toastId = toast.loading("Deleting...");
     setLoading(true);
@@ -33,6 +34,26 @@ export default function LiveClassesTable({
     setConfirmationModal(null);
     toast.dismiss(toastId);
   };
+
+  useEffect(() => {
+    intervals.forEach((interval) => clearInterval(interval));
+    const newIntervals = classes.map((liveClass) => {
+      const startTime = new Date(liveClass.startTime);
+      const now = new Date();
+      const timeDiffMs = startTime - now;
+      if (timeDiffMs <= 600000 && timeDiffMs > 0) {
+        const interval = setInterval(() => {
+          setCurrentTime(new Date());
+        }, 1000);
+        return interval;
+      }
+      return null;
+    });
+    setIntervals(newIntervals);
+    return () => {
+      newIntervals.forEach((interval) => clearInterval(interval));
+    };
+  }, [classes]);
   if (!classes?.length) {
     return <p className="text-richblack-100 text-lg">No live classes found.</p>;
   }
@@ -42,9 +63,17 @@ export default function LiveClassesTable({
       <div className="space-y-6">
         {classes.map((liveClass) => {
           const startTime = new Date(liveClass.startTime);
-          const now = new Date();
-          const timeDiffMs = startTime - now;
-          const canLaunch = timeDiffMs <= 60000 || now >= startTime;
+          const endTime = new Date(
+            startTime.getTime() + liveClass.duration * 60000
+          );
+          const joinWindowStart = new Date(startTime.getTime() - 60000);
+          const canLaunch =
+            currentTime >= joinWindowStart && currentTime <= endTime;
+          const formattedStartTime = startTime.toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: true,
+          });
           return (
             <div
               key={liveClass._id}
@@ -69,6 +98,9 @@ export default function LiveClassesTable({
                     {formatDate(liveClass.startTime)} | {liveClass.duration} min
                     | {liveClass.platform}
                   </p>
+                  <p className="text-xs text-richblack-300 mt-1">
+                    Scheduled On: {formattedStartTime}
+                  </p>
                 </div>
               </div>
               <div className="flex gap-3 items-center text-richblack-100">
@@ -79,7 +111,8 @@ export default function LiveClassesTable({
                     if (canLaunch) {
                       window.open(
                         `/dashboard/room/${
-                          liveClass.roomCode || BROADCASTER_ROOM_CODE
+                          liveClass.roomCode ||
+                          import.meta.env.VITE_APP_HMS_BROADCASTER_ROOM_CODE
                         }`,
                         "_blank"
                       );

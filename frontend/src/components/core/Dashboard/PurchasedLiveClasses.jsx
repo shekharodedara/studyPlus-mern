@@ -51,7 +51,10 @@ export default function PurchasedLiveClasses() {
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {liveClasses.map((liveClass) => {
-          const hasStarted = new Date(liveClass.startTime) <= new Date();
+          const now = new Date();
+          const start = new Date(liveClass.startTime);
+          const end = new Date(start.getTime() + liveClass.duration * 60000); // duration in ms
+          const isLive = now >= start && now <= end;
           return (
             <div
               key={liveClass._id}
@@ -72,10 +75,17 @@ export default function PurchasedLiveClasses() {
                 Scheduled On:{" "}
                 {new Date(
                   liveClass.startTime || liveClass.createdAt
-                ).toLocaleDateString()}
+                ).toLocaleString("en-US", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric",
+                  hour: "numeric",
+                  minute: "2-digit",
+                  hour12: true,
+                })}
               </p>
               <button
-                disabled={!hasStarted}
+                disabled={!isLive}
                 onClick={() =>
                   window.open(
                     `/dashboard/room/${
@@ -85,12 +95,12 @@ export default function PurchasedLiveClasses() {
                   )
                 }
                 className={`mt-4 px-4 py-2 rounded text-white font-semibold transition ${
-                  hasStarted
+                  isLive
                     ? "bg-yellow-400 hover:bg-yellow-500"
                     : "bg-gray-500 cursor-not-allowed"
                 }`}
               >
-                {hasStarted ? "Join Class" : "Not Started Yet"}
+                {isLive ? "Join Class" : "Not Live Now"}
               </button>
             </div>
           );

@@ -38,21 +38,22 @@ import LiveClasses from "./pages/LiveClasses";
 import LiveClassDetails from "./pages/LiveClassDetails";
 import PurchasedLiveClasses from "./components/core/Dashboard/PurchasedLiveClasses";
 import LiveClassRoom from "./components/core/Dashboard/LiveClassRoom";
+import LiveClassNotification from "./components/common/LiveClassNotification";
+import {
+  getInstructorLiveClasses,
+  getUserPurchasedLiveClasses,
+} from "./services/operations/liveClassesApi";
 
 function App() {
-  const { user } = useSelector((state) => state.profile);
+  const { user, token } = useSelector((state) => ({
+    user: state.profile.user,
+    token: state.auth.token,
+  }));
+  const [liveClasses, setLiveClasses] = useState([]);
   const location = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
-
-  useEffect(() => {
-    scrollTo(0, 0);
-  }, [location]);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
   const [showArrow, setShowArrow] = useState(false);
   const handleArrow = () => {
     if (window.scrollY > 500) {
@@ -67,6 +68,24 @@ function App() {
     };
   }, [showArrow]);
 
+  useEffect(() => {
+    async function fetchLiveClasses() {
+      if (!token) return;
+      try {
+        let res = [];
+        if (user.accountType === ACCOUNT_TYPE.INSTRUCTOR) {
+          res = await getInstructorLiveClasses(token);
+        } else {
+          res = await getUserPurchasedLiveClasses(token);
+        }
+        setLiveClasses(res || []);
+      } catch (error) {
+        console.error("Failed to fetch live classes", error);
+      }
+    }
+    fetchLiveClasses();
+  }, [token, user]);
+
   return (
     <div className="w-screen min-h-screen bg-richblack-900 flex flex-col font-inter">
       <Navbar />
@@ -78,6 +97,7 @@ function App() {
       >
         <HiArrowNarrowUp />
       </button>
+      <LiveClassNotification liveClasses={liveClasses} user={user} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/contact" element={<Contact />} />
