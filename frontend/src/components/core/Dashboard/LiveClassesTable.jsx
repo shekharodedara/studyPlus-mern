@@ -58,10 +58,37 @@ export default function LiveClassesTable({
     return <p className="text-richblack-100 text-lg">No live classes found.</p>;
   }
 
+  const isLiveClass = (startTime, duration) => {
+    const now = new Date();
+    const endTime = new Date(startTime).getTime() + duration * 60000;
+    const startTimeMs = new Date(startTime).getTime();
+    return now >= startTimeMs && now <= endTime;
+  };
+
+  const isUpcomingClass = (startTime) => {
+    const now = new Date();
+    const diffMs = startTime - now;
+    return diffMs <= 5 * 60 * 1000 && diffMs > 0;
+  };
+
+  const sortedClasses = [...classes].sort((a, b) => {
+    const startA = new Date(a.startTime);
+    const startB = new Date(b.startTime);
+    const isALive = isLiveClass(a.startTime, a.duration);
+    const isBLive = isLiveClass(b.startTime, b.duration);
+    if (isALive && !isBLive) return -1;
+    if (!isALive && isBLive) return 1;
+    const isAUpcoming = isUpcomingClass(startA);
+    const isBUpcoming = isUpcomingClass(startB);
+    if (isAUpcoming && !isBUpcoming) return -1;
+    if (!isAUpcoming && isBUpcoming) return 1;
+    return startA - startB;
+  });
+
   return (
     <>
       <div className="space-y-6">
-        {classes.map((liveClass) => {
+        {sortedClasses.map((liveClass) => {
           const startTime = new Date(liveClass.startTime);
           const endTime = new Date(
             startTime.getTime() + liveClass.duration * 60000
@@ -74,10 +101,18 @@ export default function LiveClassesTable({
             minute: "2-digit",
             hour12: true,
           });
+          const isUpcoming = isUpcomingClass(startTime);
+          const isLive = isLiveClass(startTime, liveClass.duration);
           return (
             <div
               key={liveClass._id}
-              className="border border-richblack-700 rounded-lg p-4 flex justify-between items-center"
+              className={`border rounded-lg p-4 flex justify-between items-center ${
+                isLive
+                  ? "border-2 border-green-500"
+                  : isUpcoming
+                  ? "border-2 border-yellow-500"
+                  : "border-richblack-700"
+              }`}
             >
               <div className="flex items-start gap-4">
                 {liveClass.thumbnail && (
@@ -104,6 +139,16 @@ export default function LiveClassesTable({
                 </div>
               </div>
               <div className="flex gap-3 items-center text-richblack-100">
+                {isLive && (
+                  <span className="text-green-500 text-xs font-semibold">
+                    Live
+                  </span>
+                )}
+                {isUpcoming && !isLive && (
+                  <span className="text-yellow-500 text-xs font-semibold">
+                    Upcoming
+                  </span>
+                )}
                 <button
                   title="Launch Live Class"
                   disabled={!canLaunch}

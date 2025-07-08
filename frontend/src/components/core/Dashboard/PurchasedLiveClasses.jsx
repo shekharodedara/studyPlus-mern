@@ -6,6 +6,7 @@ export default function PurchasedLiveClasses() {
   const { token } = useSelector((state) => state.auth);
   const [liveClasses, setLiveClasses] = useState(null);
   const [error, setError] = useState(null);
+  const [enabledClasses, setEnabledClasses] = useState([]);
   const VIEWER_REALTIME_ROOM_CODE = import.meta.env
     .VITE_APP_HMS_VIEWER_REALTIME_ROOM_CODE;
 
@@ -22,6 +23,34 @@ export default function PurchasedLiveClasses() {
       fetchLiveClasses();
     }
   }, [token]);
+
+  useEffect(() => {
+    if (!liveClasses) return;
+    const intervals = [];
+    liveClasses.forEach((liveClass) => {
+      const now = new Date();
+      const start = new Date(liveClass.startTime);
+      const end = new Date(start.getTime() + liveClass.duration * 60000);
+      const fiveMinBeforeStart = new Date(start.getTime() - 5 * 60000);
+      const isWithin5Min = now >= fiveMinBeforeStart && now < start;
+      const isLive = now >= start && now <= end;
+      if (isLive) {
+        setEnabledClasses((prev) => [...prev, liveClass._id]);
+      } else if (isWithin5Min) {
+        const interval = setInterval(() => {
+          const nowCheck = new Date();
+          if (nowCheck >= start && nowCheck <= end) {
+            setEnabledClasses((prev) => [...prev, liveClass._id]);
+            clearInterval(interval);
+          }
+        }, 1000);
+        intervals.push(interval);
+      }
+    });
+    return () => {
+      intervals.forEach(clearInterval);
+    };
+  }, [liveClasses]);
 
   if (error) {
     return (
@@ -51,10 +80,7 @@ export default function PurchasedLiveClasses() {
       </h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {liveClasses.map((liveClass) => {
-          const now = new Date();
-          const start = new Date(liveClass.startTime);
-          const end = new Date(start.getTime() + liveClass.duration * 60000); // duration in ms
-          const isLive = now >= start && now <= end;
+          const isEnabled = enabledClasses.includes(liveClass._id);
           return (
             <div
               key={liveClass._id}
@@ -73,9 +99,7 @@ export default function PurchasedLiveClasses() {
               </p>
               <p className="text-richblack-400 text-sm mt-1">
                 Scheduled On:{" "}
-                {new Date(
-                  liveClass.startTime || liveClass.createdAt
-                ).toLocaleString("en-US", {
+                {new Date(liveClass.startTime).toLocaleString("en-US", {
                   year: "numeric",
                   month: "short",
                   day: "numeric",
@@ -85,7 +109,7 @@ export default function PurchasedLiveClasses() {
                 })}
               </p>
               <button
-                disabled={!isLive}
+                disabled={!isEnabled}
                 onClick={() =>
                   window.open(
                     `/dashboard/room/${
@@ -95,12 +119,12 @@ export default function PurchasedLiveClasses() {
                   )
                 }
                 className={`mt-4 px-4 py-2 rounded text-white font-semibold transition ${
-                  isLive
+                  isEnabled
                     ? "bg-yellow-400 hover:bg-yellow-500"
                     : "bg-gray-500 cursor-not-allowed"
                 }`}
               >
-                {isLive ? "Join Class" : "Not Live Now"}
+                {isEnabled ? "Join Class" : "Not Live Now"}
               </button>
             </div>
           );

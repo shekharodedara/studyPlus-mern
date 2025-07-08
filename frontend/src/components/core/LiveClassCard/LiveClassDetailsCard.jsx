@@ -4,6 +4,7 @@ import { toast } from "react-hot-toast";
 import Img from "../../common/Img";
 import ConfirmationModal from "../../common/ConfirmationModal";
 import { buyItem } from "../../../services/operations/studentFeaturesAPI";
+import { ACCOUNT_TYPE } from "../../../utils/constants";
 
 function LiveClassDetailsCard({ liveClass, token, user, navigate, dispatch }) {
   const [confirmationModal, setConfirmationModal] = useState(null);
@@ -21,6 +22,10 @@ function LiveClassDetailsCard({ liveClass, token, user, navigate, dispatch }) {
     if (!token) {
       toast.error("Please login to add to cart");
       navigate("/login");
+      return;
+    }
+    if (user && user?.accountType === ACCOUNT_TYPE.INSTRUCTOR) {
+      toast.error("Only students allowed to purchase.");
       return;
     }
     dispatch(
@@ -44,6 +49,10 @@ function LiveClassDetailsCard({ liveClass, token, user, navigate, dispatch }) {
         price,
         thumbnail,
       };
+      if (user && user?.accountType === ACCOUNT_TYPE.INSTRUCTOR) {
+        toast.error("Only students allowed to purchase.");
+        return;
+      }
       buyItem(
         token,
         { liveClasses: [liveClassInfo] },

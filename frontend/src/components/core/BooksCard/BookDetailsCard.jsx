@@ -4,6 +4,7 @@ import Img from "./../../common/Img";
 import { addToCart } from "../../../slices/cartSlice";
 import ConfirmationModal from "../../common/ConfirmationModal";
 import { buyItem } from "../../../services/operations/studentFeaturesAPI";
+import { ACCOUNT_TYPE } from "../../../utils/constants";
 
 function BookDetailsCard({ book, user, token, navigate, dispatch }) {
   const [confirmationModal, setConfirmationModal] = useState(null);
@@ -20,6 +21,10 @@ function BookDetailsCard({ book, user, token, navigate, dispatch }) {
     if (!token) {
       toast.error("Please login to add to cart");
       navigate("/login");
+      return;
+    }
+    if (user && user?.accountType === ACCOUNT_TYPE.INSTRUCTOR) {
+      toast.error("Only students allowed to purchase.");
       return;
     }
     dispatch(
@@ -46,6 +51,10 @@ function BookDetailsCard({ book, user, token, navigate, dispatch }) {
         thumbnail: volumeInfo.imageLinks?.thumbnail,
         price: price,
       };
+      if (user && user?.accountType === ACCOUNT_TYPE.INSTRUCTOR) {
+        toast.error("Only students allowed to purchase.");
+        return;
+      }
       buyItem(token, { books: [bookInfo] }, user, navigate, dispatch);
       return;
     }
