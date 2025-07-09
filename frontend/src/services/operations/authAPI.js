@@ -160,6 +160,7 @@ export function logout(navigate) {
     dispatch(resetCart());
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    sessionStorage.clear();
     toast.success("Logged Out");
     navigate("/");
   };

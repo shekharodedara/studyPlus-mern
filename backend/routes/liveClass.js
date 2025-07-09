@@ -13,8 +13,8 @@ const router = express.Router();
 router.post("/createLiveClass", auth, isInstructor, createLiveClass);
 router.get("/instructor-classes", auth, getInstructorLiveClasses);
 router.delete("/deleteLiveClass", auth, isInstructor, deleteLiveClass);
-router.get("/getLiveClasses", auth, getPublishedLiveClasses);
-router.post("/getLiveClassDetails", getLiveClassDetails);
 router.get("/purchased-liveclasses", auth, getPurchasedLiveClasses);
+router.get("/getLiveClasses", getPublishedLiveClasses);
+router.post("/getLiveClassDetails", getLiveClassDetails);
 
 module.exports = router;

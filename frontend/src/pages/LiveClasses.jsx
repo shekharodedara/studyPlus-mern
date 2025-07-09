@@ -12,14 +12,12 @@ function LiveClasses() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!token) return;
     (async () => {
       setLoading(true);
       try {
         const res = await getStudentLiveClassesAPI(token);
         setLiveClasses(Array.isArray(res) ? res : []);
-      } catch (error) {
-        console.error("Error fetching student live classes", error);
+      } catch {
         setLiveClasses([]);
       }
       setLoading(false);
@@ -66,7 +64,13 @@ function LiveClasses() {
                   <p className="text-sm text-richblack-300">
                     Start Time:{" "}
                     <span className="text-white">
-                      {new Date(cls.startTime).toLocaleString()}
+                      {new Date(cls.startTime).toLocaleString(undefined, {
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
                     </span>
                   </p>
                   <p className="text-sm text-richblack-300">

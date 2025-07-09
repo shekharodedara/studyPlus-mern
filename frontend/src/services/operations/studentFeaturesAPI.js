@@ -108,7 +108,7 @@ async function verifyPayment(bodyData, token, navigate, dispatch) {
       navigate("/dashboard/enrolled-courses");
     } else if (bodyData.liveClasses.length) {
       navigate("/dashboard/enrolled-liveClasses");
-    } else if (bodyData.ebooks.length) {
+    } else if (bodyData.books.length) {
       navigate("/dashboard/e-books");
     }
     dispatch(resetCart());

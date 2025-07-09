@@ -19,7 +19,7 @@ export default function PurchasedBooks() {
   if (books?.length === 0) {
     return (
       <p className="grid h-[50vh] w-full place-content-center text-center text-richblack-5 text-3xl">
-        You haven't purchased any books yet.
+        You haven't purchased any ebooks yet.
       </p>
     );
   }

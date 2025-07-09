@@ -43,6 +43,7 @@ import {
   getInstructorLiveClasses,
   getUserPurchasedLiveClasses,
 } from "./services/operations/liveClassesApi";
+import ChatBot from "./components/common/ChatBot";
 
 function App() {
   const { user, token } = useSelector((state) => ({
@@ -97,9 +98,9 @@ function App() {
       <Navbar />
       <button
         onClick={() => window.scrollTo(0, 0)}
-        className={`bg-yellow-25 hover:bg-yellow-50 hover:scale-110 p-3 text-lg text-black rounded-2xl fixed right-3 z-10 duration-500 ease-in-out ${
-          showArrow ? "bottom-6" : "-bottom-24"
-        } `}
+        className={`bg-yellow-25 hover:bg-yellow-50 hover:scale-110 p-3 text-lg text-black rounded-2xl fixed right-3 z-50 duration-500 ease-in-out ${
+          showArrow ? "bottom-24" : "-bottom-24"
+        }`}
       >
         <HiArrowNarrowUp />
       </button>
@@ -218,6 +219,7 @@ function App() {
         </Route>
         <Route path="*" element={<PageNotFound />} />
       </Routes>
+      <ChatBot />
     </div>
   );
 }

@@ -134,24 +134,15 @@ exports.deleteLiveClass = async (req, res) => {
 
 exports.getPublishedLiveClasses = async (req, res) => {
   try {
-    const studentId = req.user.id;
-    // Optionally, you can filter for only classes the student is enrolled in
-    const liveClasses = await LiveClass.find({
-      status: "Published",
-      // Uncomment below if you want only enrolled classes
-      // studentsEnrolled: studentId,
-      // Uncomment below if you want only NOT enrolled classes
-      // studentsEnrolled: { $ne: studentId }
-    })
-      .sort({ startTime: 1 }) // nearest classes first
-      .populate("instructor", "name email"); // populate instructor info if needed
+    const liveClasses = await LiveClass.find({ status: "Published" })
+      .sort({ startTime: 1 })
+      .populate("instructor", "name email");
 
     return res.status(200).json({
       success: true,
       data: liveClasses,
     });
   } catch (error) {
-    console.error("Error fetching published live classes:", error);
     return res.status(500).json({
       success: false,
       message: "Error fetching live classes",
@@ -195,24 +186,23 @@ exports.getLiveClassDetails = async (req, res) => {
 
 exports.getPurchasedLiveClasses = async (req, res) => {
   try {
-    const userId = req.user.id;
-    const user = await User.findById(userId)
+    const user = await User.findById(req.user.id)
       .populate({
         path: "liveClasses",
         select: "title description duration thumbnail price startTime status",
       })
       .select("liveClasses");
     if (!user) {
-      return res
-        .status(404)
-        .json({ success: false, message: "User not found" });
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
     }
     return res.status(200).json({
       success: true,
       liveClasses: user.liveClasses,
     });
   } catch (error) {
-    console.error("Error fetching purchased live classes:", error);
     return res.status(500).json({
       success: false,
       message: "Failed to fetch purchased live classes",

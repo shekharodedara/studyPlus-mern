@@ -62,21 +62,21 @@ function Books() {
           </div>
           <form
             onSubmit={handleSearch}
-            className="flex w-full max-w-md overflow-hidden rounded-md border border-richblack-500 bg-richblack-900"
+            className="flex w-full max-w-md items-stretch overflow-hidden rounded-md border border-richblack-500 bg-richblack-900"
           >
             <input
               type="text"
               placeholder="Search books..."
               value={searchCategory}
               onChange={(e) => setSearchCategory(e.target.value)}
-              className="flex-1 px-4 py-2 text-richblack-5 bg-transparent placeholder-richblack-400 focus:outline-none"
+              className="h-10 flex-1 px-4 text-sm text-richblack-5 bg-transparent placeholder-richblack-400 focus:outline-none"
             />
             <select
               value={searchFilter}
               onChange={(e) => setSearchFilter(e.target.value)}
-              className="px-3 py-2 bg-richblack-900 text-richblack-5 border-l border-richblack-700 focus:outline-none"
+              className="h-10 px-3 text-sm bg-richblack-900 text-richblack-5 border-l border-richblack-700 focus:outline-none"
             >
-              <option value="">-</option>
+              <option value="">none</option>
               <option value="intitle">Title</option>
               <option value="inauthor">Author</option>
               <option value="inpublisher">Publisher</option>
@@ -85,7 +85,7 @@ function Books() {
             <button
               type="submit"
               disabled={loadingBooks}
-              className="bg-yellow-50 text-richblack-900 px-4 py-2 font-semibold hover:bg-yellow-100 transition-colors duration-200"
+              className="h-10 whitespace-nowrap px-4 text-sm font-semibold bg-yellow-50 text-richblack-900 hover:bg-yellow-100 transition-colors duration-200"
             >
               Search
             </button>

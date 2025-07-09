@@ -172,7 +172,7 @@ const PurchaseHistory = () => {
         history.ebooks.length === 0 &&
         history.liveClasses.length === 0 && (
           <p className="text-center text-richblack-200 mt-10 text-lg">
-            You haven't purchased any courses or books or live classes yet.
+            You haven't purchased any courses or ebooks or live classes yet.
           </p>
         )}
     </div>
