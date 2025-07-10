@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
@@ -52,6 +52,8 @@ function App() {
   }));
   const [liveClasses, setLiveClasses] = useState([]);
   const location = useLocation();
+  const navigate = useNavigate();
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
@@ -219,7 +221,11 @@ function App() {
         </Route>
         <Route path="*" element={<PageNotFound />} />
       </Routes>
-      <ChatBot />
+      {user?.accountType !== ACCOUNT_TYPE.INSTRUCTOR &&
+        location.pathname !== "/login" &&
+        location.pathname !== "/signup" && (
+          <ChatBot token={token} navigate={navigate} />
+        )}
     </div>
   );
 }

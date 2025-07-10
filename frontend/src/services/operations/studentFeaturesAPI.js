@@ -8,6 +8,7 @@ import { resetCart } from "../../slices/cartSlice";
 const {
   COURSE_PAYMENT_API,
   COURSE_VERIFY_API,
+  ASK_AI_API,
   // SEND_PAYMENT_SUCCESS_EMAIL_API,
 } = studentEndpoints;
 
@@ -138,3 +139,19 @@ async function verifyPayment(bodyData, token, navigate, dispatch) {
 //     console.log("PAYMENT SUCCESS EMAIL ERROR....", error);
 //   }
 // }
+
+export async function askAI({ question, chatHistory = [] }) {
+  try {
+    const response = await apiConnector("POST", ASK_AI_API, {
+      question,
+      chatHistory,
+    });
+    const { answer, error } = response?.data || {};
+    if (answer) return answer;
+    if (error) throw new Error(error);
+    throw new Error("No valid response from AI.");
+  } catch (err) {
+    console.error("ASK_AI_API_ERROR =>", err);
+    return err.message || "AI failed to respond.";
+  }
+}

@@ -5,6 +5,9 @@ import mkcert from "vite-plugin-mkcert";
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd());
   return {
+    build: {
+      sourcemap: env.VITE_APP_IS_PRODUCTION === "true" ? false : true,
+    },
     plugins: [react(), mkcert()],
     server: {
       host: true,

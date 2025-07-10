@@ -16,16 +16,20 @@ function Catalog() {
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
       try {
         const res = await fetchCourseCategories();
         const category = res.find(
           (ct) => ct.name.split(" ").join("-").toLowerCase() === catalogName
         );
-        if (category) setCategoryId(category._id);
-        else setCategoryId("");
+        if (category) {
+          setCategoryId(category._id);
+          return;
+        } else setCategoryId("");
       } catch (error) {
         console.log("Could not fetch Categories.", error);
       }
+      setLoading(false);
     })();
   }, [catalogName]);
 
@@ -50,7 +54,7 @@ function Catalog() {
         <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center">
           <Loading />
         </div>
-      ) : !catalogPageData ? (
+      ) : !loading && !catalogPageData ? (
         <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center text-white text-4xl">
           No Courses found for selected Category
         </div>

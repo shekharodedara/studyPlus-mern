@@ -22,6 +22,7 @@ export const studentEndpoints = {
   COURSE_VERIFY_API: BASE_URL + "/payment/verifyPayment",
   SEND_PAYMENT_SUCCESS_EMAIL_API: BASE_URL + "/payment/sendPaymentSuccessEmail",
   GET_PURCHASE_HISTORY_API: BASE_URL + "/payment/purchase-history",
+  ASK_AI_API: BASE_URL + "/api/ask-ai",
 };
 
 export const courseEndpoints = {

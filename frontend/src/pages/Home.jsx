@@ -77,7 +77,7 @@ const Home = () => {
       </div>
       <div className=" ">
         <div className="relative h-[450px] md:h-[550px] justify-center mx-auto flex flex-col w-11/12 max-w-maxContent items-center text-white ">
-          {user?.accountType === "Student" && (
+          {user?.accountType !== "Instructor" && (
             <a href="/signup" target="_blank" rel="noopener noreferrer">
               <div
                 className="z-0 group p-1 mx-auto rounded-full bg-richblack-800 font-bold text-richblack-200
@@ -110,10 +110,11 @@ const Home = () => {
             viewport={{ once: false, amount: 0.1 }}
             className=" mt-4 w-[90%] text-center text-base lg:text-lg font-bold text-richblack-300"
           >
-            With our online coding courses, you can learn at your own pace, from
-            anywhere in the world, and get access to a wealth of resources,
-            including hands-on projects, quizzes, and personalized feedback from
-            instructors.
+            Discover a world of knowledge with our online platform. Whether
+            you're interested in expert-led courses, live interactive classes,
+            or insightful ebooks, we offer flexible, high-quality learning
+            experiences across a wide range of subjects — all accessible from
+            anywhere, at your own pace.
           </motion.div>
           {!isLoggedIn && (
             <div className="flex flex-row gap-7 mt-8">

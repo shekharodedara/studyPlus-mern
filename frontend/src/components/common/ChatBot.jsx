@@ -1,14 +1,29 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { askAI } from "../../services/operations/studentFeaturesAPI";
 import { FaRobot, FaPaperPlane } from "react-icons/fa";
-import axios from "axios";
 import ReactMarkdown from "react-markdown";
+import ConfirmationModal from "./ConfirmationModal";
+import { useLocation } from "react-router-dom";
 
-function ChatBot() {
+function ChatBot({ token, navigate }) {
   const [isOpen, setIsOpen] = useState(false);
+  const location = useLocation();
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const toggleChat = () => setIsOpen((prev) => !prev);
+  const [loginModal, setLoginModal] = useState(false);
+
+  const toggleChat = () => {
+    if (!token) {
+      setLoginModal(true);
+      return;
+    }
+    setIsOpen((prev) => !prev);
+  };
+
+  useEffect(() => {
+    setLoginModal(false);
+  }, [location.pathname]);
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -22,22 +37,22 @@ function ChatBot() {
       parts: [{ text: msg.text }],
     }));
     try {
-      const res = await axios.post(
-        `${import.meta.env.VITE_APP_BACKEND_URL}${
-          import.meta.env.VITE_APP_BASE_URL
-        }/api/ask-ai`,
-        { question: input, chatHistory }
-      );
+      const aiResponse = await askAI({ question: input, chatHistory });
       setMessages([
         ...newMessages,
         {
           role: "assistant",
-          text: res.data.answer || res.data.error || "No response.",
+          text: aiResponse,
         },
       ]);
     } catch (err) {
-      const errorMsg = err.response?.data?.error || "Something went wrong.";
-      setMessages([...newMessages, { role: "assistant", text: errorMsg }]);
+      setMessages([
+        ...newMessages,
+        {
+          role: "assistant",
+          text: "⚠️ Oops! AI couldn't respond.",
+        },
+      ]);
     } finally {
       setLoading(false);
     }
@@ -51,6 +66,21 @@ function ChatBot() {
       >
         <FaRobot size={24} />
       </button>
+      {loginModal && (
+        <ConfirmationModal
+          modalData={{
+            text1: "You are not logged in!",
+            text2: "Please login to access the AI Chatbot.",
+            btn1Text: "Login",
+            btn2Text: "Cancel",
+            btn1Handler: () =>
+              navigate("/login", {
+                state: { from: window.location.pathname },
+              }),
+            btn2Handler: () => setLoginModal(false),
+          }}
+        />
+      )}
       {isOpen && (
         <div className="fixed bottom-20 right-6 w-80 h-[450px] bg-richblack-800 rounded-lg shadow-lg z-50 flex flex-col overflow-hidden border border-richblack-600">
           <div className="bg-yellow-400 text-black p-3 font-bold">Ask AI</div>
