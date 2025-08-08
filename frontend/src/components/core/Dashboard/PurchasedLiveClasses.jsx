@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { getUserPurchasedLiveClasses } from "../../../services/operations/liveClassesApi";
 
 export default function PurchasedLiveClasses() {
   const { token } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
   const [liveClasses, setLiveClasses] = useState(null);
   const [error, setError] = useState(null);
   const [enabledClasses, setEnabledClasses] = useState([]);
@@ -84,7 +86,8 @@ export default function PurchasedLiveClasses() {
           return (
             <div
               key={liveClass._id}
-              className="flex flex-col bg-richblack-800 rounded-lg p-4 border border-richblack-700 hover:border-yellow-400"
+              onClick={() => navigate(`/live-class/${liveClass._id}`)}
+              className="flex flex-col bg-richblack-800 rounded-lg p-4 border border-richblack-700 hover:border-yellow-400 cursor-pointer transition-all hover:bg-richblack-700"
             >
               <img
                 src={liveClass.thumbnail}

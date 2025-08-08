@@ -57,6 +57,13 @@ const liveClassSchema = new mongoose.Schema(
       enum: ["Draft", "Published"],
       default: "Draft",
     },
+    sessions: [
+      {
+        startTime: { type: Date, required: true },
+        lessonTitle: { type: String, required: true },
+        lessonDescription: { type: String, required: true },
+      },
+    ],
   },
   { timestamps: true }
 );

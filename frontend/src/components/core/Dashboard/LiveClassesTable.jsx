@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { FaVideo } from "react-icons/fa";
 import { RiDeleteBin6Line } from "react-icons/ri";
 // import { FiEdit2 } from "react-icons/fi";
@@ -18,6 +19,7 @@ export default function LiveClassesTable({
   setLoading,
 }) {
   const { token } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
   const [confirmationModal, setConfirmationModal] = useState(null);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [intervals, setIntervals] = useState([]);
@@ -106,7 +108,8 @@ export default function LiveClassesTable({
           return (
             <div
               key={liveClass._id}
-              className={`border rounded-lg p-4 flex justify-between items-center ${
+              onClick={() => navigate(`/live-class/${liveClass._id}`)}
+              className={`border rounded-lg p-4 flex justify-between items-center cursor-pointer hover:bg-richblack-800 transition-all ${
                 isLive
                   ? "border-2 border-green-500"
                   : isUpcoming

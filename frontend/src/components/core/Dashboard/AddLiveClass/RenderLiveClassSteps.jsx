@@ -9,7 +9,7 @@ export default function RenderLiveClassSteps() {
   const { step } = useSelector((state) => state.liveClass);
   const steps = [
     { id: 1, title: "Live Class Info" },
-    { id: 2, title: "Live Settings" },
+    { id: 2, title: "Recurrence Options" },
     { id: 3, title: "Publish" },
   ];
 

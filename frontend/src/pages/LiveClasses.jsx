@@ -64,12 +64,13 @@ function LiveClasses() {
                   <p className="text-sm text-richblack-300">
                     Start Time:{" "}
                     <span className="text-white">
-                      {new Date(cls.startTime).toLocaleString(undefined, {
+                      {new Date(cls.startTime).toLocaleString("en-US", {
                         year: "numeric",
                         month: "short",
                         day: "numeric",
-                        hour: "2-digit",
+                        hour: "numeric",
                         minute: "2-digit",
+                        hour12: true,
                       })}
                     </span>
                   </p>

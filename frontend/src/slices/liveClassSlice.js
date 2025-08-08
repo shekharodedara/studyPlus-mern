@@ -2,7 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   step: 1,
-  liveClass: null,
+  liveClass: {
+    recurrence: [],
+  },
   editLiveClass: false,
   loading: false,
 };

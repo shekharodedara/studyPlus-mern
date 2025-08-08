@@ -19,7 +19,6 @@ export default function LiveClassInformationForm() {
     defaultValues: {
       title: liveClass?.title || "",
       description: liveClass?.description || "",
-      startTime: liveClass?.startTime || "",
       duration: liveClass?.duration || "",
       price: liveClass?.price || "",
       thumbnail: "",
@@ -27,7 +26,7 @@ export default function LiveClassInformationForm() {
   });
 
   const onSubmit = async (data) => {
-    if (!data.title || !data.description || !data.startTime || !data.duration) {
+    if (!data.title || !data.description || !data.duration) {
       toast.error("Please fill all required fields");
       return;
     }
@@ -102,21 +101,6 @@ export default function LiveClassInformationForm() {
         editData={editLiveClass ? liveClass?.thumbnail : null}
       />
       <div className="flex flex-col space-y-2">
-        <label htmlFor="startTime" className="text-sm text-richblack-5">
-          Start Time <sup className="text-pink-200">*</sup>
-        </label>
-        <input
-          id="startTime"
-          type="datetime-local"
-          {...register("startTime", { required: true })}
-          className="form-style w-full"
-          onBlur={(e) => setValue("startTime", e.target.value)}
-        />
-        {errors.startTime && (
-          <span className="text-xs text-pink-200">Start time is required</span>
-        )}
-      </div>
-      <div className="flex flex-col space-y-2">
         <label htmlFor="duration" className="text-sm text-richblack-5">
           Duration (in minutes) <sup className="text-pink-200">*</sup>
         </label>
@@ -129,6 +113,21 @@ export default function LiveClassInformationForm() {
         />
         {errors.duration && (
           <span className="text-xs text-pink-200">Enter a valid duration</span>
+        )}
+      </div>
+      <div className="flex flex-col space-y-2">
+        <label htmlFor="participantLimit" className="text-sm text-richblack-5">
+          Participant Limit <sup className="text-pink-200">*</sup>
+        </label>
+        <input
+          id="participantLimit"
+          type="number"
+          placeholder="e.g. 100"
+          {...register("participantLimit", { required: true, min: 1 })}
+          className="form-style w-full"
+        />
+        {errors.participantLimit && (
+          <span className="text-xs text-pink-200">Participant limit is required</span>
         )}
       </div>
       <div className="flex flex-col space-y-2">

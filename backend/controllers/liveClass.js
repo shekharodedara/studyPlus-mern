@@ -9,12 +9,23 @@ exports.createLiveClass = async (req, res) => {
       description,
       startTime,
       duration,
-      platform,
-      accessLink,
       status,
       price,
       participantLimit,
+      sessions,
     } = req.body;
+    const platform = "100 ms";
+    const accessLink = "hms";
+    if (typeof sessions === "string") {
+      try {
+        sessions = JSON.parse(sessions);
+      } catch (e) {
+        return res.status(400).json({
+          success: false,
+          message: "Invalid sessions format",
+        });
+      }
+    }
     const instructorId = req.user.id;
     const thumbnail = req.files?.thumbnail;
     if (
@@ -22,8 +33,6 @@ exports.createLiveClass = async (req, res) => {
       !description ||
       !startTime ||
       !duration ||
-      !platform ||
-      !accessLink ||
       !thumbnail ||
       !participantLimit
     ) {
@@ -31,6 +40,21 @@ exports.createLiveClass = async (req, res) => {
         success: false,
         message: "All fields are required",
       });
+    }
+    if (!sessions || !Array.isArray(sessions) || sessions.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Sessions are required for recurring live classes",
+      });
+    }
+    for (const s of sessions) {
+      if (!s.startTime || !s.lessonTitle || !s.lessonDescription) {
+        return res.status(400).json({
+          success: false,
+          message:
+            "Each session must have startTime, lessonTitle, and lessonDescription",
+        });
+      }
     }
     if (!status || status === undefined) {
       status = "Draft";
@@ -51,6 +75,7 @@ exports.createLiveClass = async (req, res) => {
       status,
       thumbnail: thumbnailDetails.secure_url,
       participantLimit,
+      sessions,
     });
     await User.findByIdAndUpdate(
       instructorId,

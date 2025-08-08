@@ -1,49 +1,79 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import ForgotPassword from "./pages/ForgotPassword";
-import UpdatePassword from "./pages/UpdatePassword";
-import VerifyEmail from "./pages/VerifyEmail";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import PageNotFound from "./pages/PageNotFound";
-import CourseDetails from "./pages/CourseDetails";
-import Catalog from "./pages/Catalog";
+import { HiArrowNarrowUp } from "react-icons/hi";
 import Navbar from "./components/common/Navbar";
 import OpenRoute from "./components/core/Auth/OpenRoute";
 import ProtectedRoute from "./components/core/Auth/ProtectedRoute";
-import Dashboard from "./pages/Dashboard";
-import MyProfile from "./components/core/Dashboard/MyProfile";
-import Settings from "./components/core/Dashboard/Settings/Settings";
-import MyCourses from "./components/core/Dashboard/MyCourses";
-import EditCourse from "./components/core/Dashboard/EditCourse";
-import Instructor from "./components/core/Dashboard/Instructor";
-import Cart from "./components/core/Dashboard/Cart/Cart";
-import EnrolledCourses from "./components/core/Dashboard/EnrolledCourses";
-import AddCourse from "./components/core/Dashboard/AddCourse/AddCourse";
-import ViewCourse from "./pages/ViewCourse";
-import VideoDetails from "./components/core/ViewCourse/VideoDetails";
-import { ACCOUNT_TYPE } from "./utils/constants";
-import { HiArrowNarrowUp } from "react-icons/hi";
-import Books from "./pages/Books";
-import BookDetails from "./pages/BookDetails";
-import PurchasedBooks from "./components/core/Dashboard/PurchasedBooks";
-import PurchaseHistory from "./components/core/Dashboard/PurchaseHistory";
-import AddLiveClass from "./components/core/Dashboard/AddLiveClass/AddLiveClass";
-import MyLiveClasses from "./components/core/Dashboard/MyLiveClasses";
-import LiveClasses from "./pages/LiveClasses";
-import LiveClassDetails from "./pages/LiveClassDetails";
-import PurchasedLiveClasses from "./components/core/Dashboard/PurchasedLiveClasses";
-import LiveClassRoom from "./components/core/Dashboard/LiveClassRoom";
 import LiveClassNotification from "./components/common/LiveClassNotification";
+import ChatBot from "./components/common/ChatBot";
 import {
   getInstructorLiveClasses,
   getUserPurchasedLiveClasses,
 } from "./services/operations/liveClassesApi";
-import ChatBot from "./components/common/ChatBot";
+import { ACCOUNT_TYPE } from "./utils/constants";
+import useVersionPolling from "./utils/userVersionPolling";
+
+const Home = lazy(() => import("./pages/Home"));
+const Login = lazy(() => import("./pages/Login"));
+const Signup = lazy(() => import("./pages/Signup"));
+const ForgotPassword = lazy(() => import("./pages/ForgotPassword"));
+const UpdatePassword = lazy(() => import("./pages/UpdatePassword"));
+const VerifyEmail = lazy(() => import("./pages/VerifyEmail"));
+const About = lazy(() => import("./pages/About"));
+const Contact = lazy(() => import("./pages/Contact"));
+const PageNotFound = lazy(() => import("./pages/PageNotFound"));
+const CourseDetails = lazy(() => import("./pages/CourseDetails"));
+const Catalog = lazy(() => import("./pages/Catalog"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const MyProfile = lazy(() => import("./components/core/Dashboard/MyProfile"));
+const Settings = lazy(() =>
+  import("./components/core/Dashboard/Settings/Settings")
+);
+const MyCourses = lazy(() => import("./components/core/Dashboard/MyCourses"));
+const EditCourse = lazy(() => import("./components/core/Dashboard/EditCourse"));
+const Instructor = lazy(() => import("./components/core/Dashboard/Instructor"));
+const Cart = lazy(() => import("./components/core/Dashboard/Cart/Cart"));
+const EnrolledCourses = lazy(() =>
+  import("./components/core/Dashboard/EnrolledCourses")
+);
+const AddCourse = lazy(() =>
+  import("./components/core/Dashboard/AddCourse/AddCourse")
+);
+const ViewCourse = lazy(() => import("./pages/ViewCourse"));
+const VideoDetails = lazy(() =>
+  import("./components/core/ViewCourse/VideoDetails")
+);
+const Books = lazy(() => import("./pages/Books"));
+const BookDetails = lazy(() => import("./pages/BookDetails"));
+const PurchasedBooks = lazy(() =>
+  import("./components/core/Dashboard/PurchasedBooks")
+);
+const PurchaseHistory = lazy(() =>
+  import("./components/core/Dashboard/PurchaseHistory")
+);
+const AddLiveClass = lazy(() =>
+  import("./components/core/Dashboard/AddLiveClass/AddLiveClass")
+);
+const MyLiveClasses = lazy(() =>
+  import("./components/core/Dashboard/MyLiveClasses")
+);
+const LiveClasses = lazy(() => import("./pages/LiveClasses"));
+const LiveClassDetails = lazy(() => import("./pages/LiveClassDetails"));
+const PurchasedLiveClasses = lazy(() =>
+  import("./components/core/Dashboard/PurchasedLiveClasses")
+);
+const LiveClassRoom = lazy(() =>
+  import("./components/core/Dashboard/LiveClassRoom")
+);
+
+const Loader = () => {
+  return (
+    <div className="w-full h-screen flex items-center justify-center bg-richblack-900 text-white">
+      <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-yellow-50"></div>
+    </div>
+  );
+};
 
 function App() {
   const { user, token } = useSelector((state) => ({
@@ -53,6 +83,12 @@ function App() {
   const [liveClasses, setLiveClasses] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
+  const { newVersionAvailable } = useVersionPolling();
+  useEffect(() => {
+    if (newVersionAvailable) {
+      alert("A new version of this app is available. Please refresh the page.");
+    }
+  }, [newVersionAvailable]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -107,120 +143,125 @@ function App() {
         <HiArrowNarrowUp />
       </button>
       <LiveClassNotification liveClasses={liveClasses} user={user} />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/about" element={<About />} />
-        <Route path="catalog/:catalogName" element={<Catalog />} />
-        <Route path="courses/:courseId" element={<CourseDetails />} />
-        <Route path="/books" element={<Books />} />
-        <Route path="/books/:id" element={<BookDetails />} />
-        <Route path="/live-classes" element={<LiveClasses />} />
-        <Route path="/live-class/:id" element={<LiveClassDetails />} />
-        <Route
-          path="signup"
-          element={
-            // <OpenRoute>
-            <Signup />
-            // </OpenRoute>
-          }
-        />
-        <Route
-          path="login"
-          element={
-            // <OpenRoute>
-            <Login />
-            // </OpenRoute>
-          }
-        />
-        <Route
-          path="forgot-password"
-          element={
-            <OpenRoute>
-              <ForgotPassword />
-            </OpenRoute>
-          }
-        />
-        <Route
-          path="verify-email"
-          element={
-            <OpenRoute>
-              <VerifyEmail />
-            </OpenRoute>
-          }
-        />
-        <Route
-          path="update-password/:id"
-          element={
-            <OpenRoute>
-              <UpdatePassword />
-            </OpenRoute>
-          }
-        />
-        <Route
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        >
-          <Route path="dashboard/my-profile" element={<MyProfile />} />
-          <Route path="dashboard/Settings" element={<Settings />} />
-          <Route path="dashboard/room/:roomCode" element={<LiveClassRoom />} />
-          {user?.accountType === ACCOUNT_TYPE.STUDENT && (
-            <>
-              <Route path="dashboard/cart" element={<Cart />} />
-              <Route path="dashboard/e-books" element={<PurchasedBooks />} />
-              <Route
-                path="dashboard/enrolled-courses"
-                element={<EnrolledCourses />}
-              />
-              <Route
-                path="dashboard/enrolled-liveClasses"
-                element={<PurchasedLiveClasses />}
-              />
-              <Route
-                path="dashboard/purchase-history"
-                element={<PurchaseHistory />}
-              />
-            </>
-          )}
-          {user?.accountType === ACCOUNT_TYPE.INSTRUCTOR && (
-            <>
-              <Route path="dashboard/instructor" element={<Instructor />} />
-              <Route path="dashboard/add-course" element={<AddCourse />} />
-              <Route
-                path="dashboard/add-live-class"
-                element={<AddLiveClass />}
-              />
-              <Route path="dashboard/my-courses" element={<MyCourses />} />
-              <Route
-                path="dashboard/live-classes"
-                element={<MyLiveClasses />}
-              />
-              <Route
-                path="dashboard/edit-course/:courseId"
-                element={<EditCourse />}
-              />
-            </>
-          )}
-        </Route>
-        <Route
-          element={
-            <ProtectedRoute>
-              <ViewCourse />
-            </ProtectedRoute>
-          }
-        >
-          {user?.accountType === ACCOUNT_TYPE.STUDENT && (
+      <Suspense fallback={<Loader />}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/about" element={<About />} />
+          <Route path="catalog/:catalogName" element={<Catalog />} />
+          <Route path="courses/:courseId" element={<CourseDetails />} />
+          <Route path="/books" element={<Books />} />
+          <Route path="/books/:id" element={<BookDetails />} />
+          <Route path="/live-classes" element={<LiveClasses />} />
+          <Route path="/live-class/:id" element={<LiveClassDetails />} />
+          <Route
+            path="signup"
+            element={
+              // <OpenRoute>
+              <Signup />
+              // </OpenRoute>
+            }
+          />
+          <Route
+            path="login"
+            element={
+              // <OpenRoute>
+              <Login />
+              // </OpenRoute>
+            }
+          />
+          <Route
+            path="forgot-password"
+            element={
+              <OpenRoute>
+                <ForgotPassword />
+              </OpenRoute>
+            }
+          />
+          <Route
+            path="verify-email"
+            element={
+              <OpenRoute>
+                <VerifyEmail />
+              </OpenRoute>
+            }
+          />
+          <Route
+            path="update-password/:id"
+            element={
+              <OpenRoute>
+                <UpdatePassword />
+              </OpenRoute>
+            }
+          />
+          <Route
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="dashboard/my-profile" element={<MyProfile />} />
+            <Route path="dashboard/Settings" element={<Settings />} />
             <Route
-              path="view-course/:courseId/section/:sectionId/sub-section/:subSectionId"
-              element={<VideoDetails />}
+              path="dashboard/room/:roomCode"
+              element={<LiveClassRoom />}
             />
-          )}
-        </Route>
-        <Route path="*" element={<PageNotFound />} />
-      </Routes>
+            {user?.accountType === ACCOUNT_TYPE.STUDENT && (
+              <>
+                <Route path="dashboard/cart" element={<Cart />} />
+                <Route path="dashboard/e-books" element={<PurchasedBooks />} />
+                <Route
+                  path="dashboard/enrolled-courses"
+                  element={<EnrolledCourses />}
+                />
+                <Route
+                  path="dashboard/enrolled-liveClasses"
+                  element={<PurchasedLiveClasses />}
+                />
+                <Route
+                  path="dashboard/purchase-history"
+                  element={<PurchaseHistory />}
+                />
+              </>
+            )}
+            {user?.accountType === ACCOUNT_TYPE.INSTRUCTOR && (
+              <>
+                <Route path="dashboard/instructor" element={<Instructor />} />
+                <Route path="dashboard/add-course" element={<AddCourse />} />
+                <Route
+                  path="dashboard/add-live-class"
+                  element={<AddLiveClass />}
+                />
+                <Route path="dashboard/my-courses" element={<MyCourses />} />
+                <Route
+                  path="dashboard/live-classes"
+                  element={<MyLiveClasses />}
+                />
+                <Route
+                  path="dashboard/edit-course/:courseId"
+                  element={<EditCourse />}
+                />
+              </>
+            )}
+          </Route>
+          <Route
+            element={
+              <ProtectedRoute>
+                <ViewCourse />
+              </ProtectedRoute>
+            }
+          >
+            {user?.accountType === ACCOUNT_TYPE.STUDENT && (
+              <Route
+                path="view-course/:courseId/section/:sectionId/sub-section/:subSectionId"
+                element={<VideoDetails />}
+              />
+            )}
+          </Route>
+          <Route path="*" element={<PageNotFound />} />
+        </Routes>
+      </Suspense>
       {user?.accountType !== ACCOUNT_TYPE.INSTRUCTOR &&
         location.pathname !== "/login" &&
         location.pathname !== "/signup" && (
