@@ -9,7 +9,6 @@ export const publishLiveClassAPI = async (formData, token) => {
       liveClassEndpoints.CREATE_LIVE_CLASS_API,
       formData,
       {
-        "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
       }
     );
